@@ -1,10 +1,10 @@
+import os
 import pymongo
-from pymongo import MongoClient
 
-client = MongoClient
-db = client.tweet_database
-stream = db.stream_tweets
-search = db.search_tweets
+conn = pymongo.MongoClient()
+db = conn.tweet_database
+stream_tweets = db.stream_tweets
+search_tweets = db.search_tweets
 
 import tweepy
 from tweepy.streaming import StreamListener
@@ -12,14 +12,14 @@ from tweepy import OAuthHandler
 from tweepy import Stream 
 
 # Consumer keys and access tokens, used for OAuth
-consumer_key = 'f8dZzs2Gd8BMXMSPUCBvVdg5C'
-consumer_secret = 'n1g23aOftIsyaGRGvFXGOOpjzcHZFagq6bk9VRyj8wVhobRe3P'
-access_token = '2851451905-r2t5xIvIMS2fU8896xiGw1ijI719sOFwsPvkzoH'
-access_token_secret = '52MX5qpmoJVCDOugGsKLqNFBrBZWSZZK01cE5bZ4uyoa8'
+CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
+CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
+ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN')
+ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET')
  
 # OAuth process, using the keys and tokens
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
 # Creation of the actual interface, using authentication
 api = tweepy.API(auth)
@@ -27,7 +27,7 @@ api = tweepy.API(auth)
 results = api.search(geocode="37.781157,-122.398720,.5mi")
 
 for result in results:
-	search.insert(result)
+	search_tweets.insert(result)
  
 # class listener(StreamListener):
 
