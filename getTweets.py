@@ -1,5 +1,6 @@
 import os
 import pymongo
+import json
 
 conn = pymongo.MongoClient()
 db = conn.tweet_database
@@ -11,30 +12,39 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream 
 
-# Consumer keys and access tokens, used for OAuth
+# consumer keys and access tokens for twitter OAuth
 CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
 CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
 ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN')
 ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET')
  
-# OAuth process, using the keys and tokens
+# twitter OAuth process
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
-# Creation of the actual interface, using authentication
 api = tweepy.API(auth)
 
-tweets = api.search(geocode="37.781157,-122.398720,.5mi")
+# twitter search api for tweets in SOMA
+tweets = api.search(geocode="37.7516,122.4477,3.5mi")
 
+# add relevant tweet data from search api to mongo db
 for tweet in tweets:
 	data = {}
 	data['created_at'] = tweet.created_at
 	data['coordinates'] = tweet.coordinates
+	if tweet.place:
+		data['place_type'] = tweet.place.place_type
+		data['place_box_coordinates'] = tweet.place.bounding_box.coordinates
+		data['place_name'] = tweet.place.full_name
+		data['place_id'] = tweet.place.id
+	data['id'] = tweet.id
 	data['id_str'] = tweet.id_str
 	data['text'] = tweet.text
-    
+	data['screen_name'] = tweet.user.screen_name
+ 
 	search_tweets.insert(data)
  
+# the following code uses twitter stream API to get tweets from SF area
 # class listener(StreamListener):
 
 # 	def on_data(self, data):
