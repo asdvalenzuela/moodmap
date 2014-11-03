@@ -24,10 +24,16 @@ auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 # Creation of the actual interface, using authentication
 api = tweepy.API(auth)
 
-results = api.search(geocode="37.781157,-122.398720,.5mi")
+tweets = api.search(geocode="37.781157,-122.398720,.5mi")
 
-for result in results:
-	search_tweets.insert(result)
+for tweet in tweets:
+	data = {}
+	data['created_at'] = tweet.created_at
+	data['coordinates'] = tweet.coordinates
+	data['id_str'] = tweet.id_str
+	data['text'] = tweet.text
+    
+	search_tweets.insert(data)
  
 # class listener(StreamListener):
 
