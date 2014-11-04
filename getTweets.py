@@ -26,25 +26,29 @@ auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
 api = tweepy.API(auth)
 
+for page in Cursor(api.search, geocode="37.7516,-122.4477,3.5mi").pages():
+    # page is a list of statuses
+    for tweet in page:
+
 # twitter search api for tweets in SF
-tweets = api.search(count=100, geocode="37.7516,-122.4477,3.5mi")
-# add relevant tweet data from search api to mongo db
-for tweet in tweets:	
-	data = {}
-	data['created_at'] = tweet.created_at
-	if tweet.coordinates:
-		data['loc'] = tweet.coordinates["coordinates"]
-	if tweet.place:
-		data['place_type'] = tweet.place.place_type
-		data['place_box_coordinates'] = tweet.place.bounding_box.coordinates
-		data['place_name'] = tweet.place.full_name
-		data['place_id'] = tweet.place.id
-	data['id'] = tweet.id
-	data['id_str'] = tweet.id_str
-	data['text'] = tweet.text
-	data['screen_name'] = tweet.user.screen_name
- 
-	search_tweets.insert(data)
+# tweets = api.search(count=100, geocode="37.7516,-122.4477,3.5mi")
+# # add relevant tweet data from search api to mongo db
+		# for tweet in tweets:	
+		data = {}
+		data['created_at'] = tweet.created_at
+		if tweet.coordinates:
+			data['loc'] = tweet.coordinates["coordinates"]
+		if tweet.place:
+			data['place_type'] = tweet.place.place_type
+			data['place_box_coordinates'] = tweet.place.bounding_box.coordinates
+			data['place_name'] = tweet.place.full_name
+			data['place_id'] = tweet.place.id
+		data['id'] = tweet.id
+		data['id_str'] = tweet.id_str
+		data['text'] = tweet.text
+		data['screen_name'] = tweet.user.screen_name
+	 
+		search_tweets.insert(data)
 
  
 # the following code uses twitter stream API to get tweets from SF area
