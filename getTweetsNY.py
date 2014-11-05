@@ -4,8 +4,8 @@ import time
 
 conn = pymongo.MongoClient()
 db = conn.tweet_database
-stream_tweets = db.stream_tweets
-search_tweets = db.search_tweets
+stream_tweetsNY = db.stream_tweetsNY
+search_tweetsNY = db.search_tweetsNY
 
 import tweepy
 from tweepy.streaming import StreamListener
@@ -14,21 +14,21 @@ from tweepy import Stream
 from tweepy import Cursor 
 
 # consumer keys and access tokens for twitter OAuth
-CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
-CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
-ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN')
-ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET')
+CONSUMER_KEY1 = os.environ.get('CONSUMER_KEY1')
+CONSUMER_SECRET1 = os.environ.get('CONSUMER_SECRET1')
+ACCESS_TOKEN1 = os.environ.get('ACCESS_TOKEN1')
+ACCESS_TOKEN_SECRET1 = os.environ.get('ACCESS_TOKEN_SECRET1')
  
 # twitter OAuth process
-auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+auth = OAuthHandler(CONSUMER_KEY1, CONSUMER_SECRET1)
+auth.set_access_token(ACCESS_TOKEN1, ACCESS_TOKEN_SECRET1)
 
 # create api 
 api = tweepy.API(auth)
 
 def getTweets():
-	# queries twitter search api for tweets in SF
-	for page in Cursor(api.search, count=100, geocode="37.7516,-122.4477,3.5mi").pages(20):
+	# queries twitter search api for tweets in NY
+	for page in Cursor(api.search, count=100, geocode="40.7041533,-73.91764719999998,10mi").pages(20):
 	    for tweet in page:
 			# adds relevant data from each tweet to search collection in twitter mongo db 
 			data = {}
@@ -46,27 +46,10 @@ def getTweets():
 			data['text'] = tweet.text
 			data['screen_name'] = tweet.user.screen_name
 		 
-			search_tweets.insert(data)
+			search_tweetsNY.insert(data)
 
 	time.sleep(900)
 
 # executes function every 15 minutes to avoid rate limits
 while True:
 	getTweets()
-
-
-
- 
-# the following code uses twitter stream API to get tweets from SF area
-# class listener(StreamListener):
-
-# 	def on_data(self, data):
-# 		print data
-# 		return True
-
-# 	def on_error(self,status):
-# 		print status
-
-# twitterStream = Stream(auth, listener())
-# #swlong, swlat, nelong, nelat
-# twitterStream.filter(locations=[-122.50,36.8,-121.75,37.8], languages=None)
