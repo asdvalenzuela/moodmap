@@ -28,7 +28,7 @@ api = tweepy.API(auth)
 
 def getTweets():
 	# queries twitter search api for tweets in NY
-	for page in Cursor(api.search, count=100, geocode="40.7041533,-73.91764719999998,10mi").pages(20):
+	for page in Cursor(api.search, lang="en", count=100, geocode="40.7041533,-73.91764719999998,10mi").pages(20):
 	    for tweet in page:
 			# adds relevant data from each tweet to search collection in twitter mongo db 
 			data = {}
