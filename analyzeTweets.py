@@ -6,6 +6,7 @@ from nltk.classify import apply_features
 import ChrisPottsTokenizer as CPT
 from OpinionLexicon import positive_words, negative_words
 import re
+from emoticonCheck import *
 
 # creates connection to db
 client = MongoClient()
@@ -20,9 +21,6 @@ username_re = re.compile(username, re.VERBOSE | re.I | re.UNICODE)
 url = r"""((https?):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)"""
 url_re = re.compile(url, re.VERBOSE | re.I | re.UNICODE)
 
-punctuation = r"""([^\w\s])"""
-punctuation_re = re.compile(punctuation, re.VERBOSE | re.I | re.UNICODE)
-
 articles_pronouns = r"""(\s+)(a|an|and|the)(\s+)"""
 articles_pronouns_re = re.compile(articles_pronouns, re.VERBOSE | re.I | re.UNICODE)
 
@@ -35,7 +33,6 @@ def get_corpus_from_db():
         if "RT" not in tweet_text:
             tweet_text = username_re.sub('', tweet_text)
             tweet_text = url_re.sub('', tweet_text)
-            tweet_text = punctuation_re.sub('', tweet_text)
             tweet_text = articles_pronouns_re.sub(' ', tweet_text)
             tweet_text = tweet_text.strip()
             tweet_list.append(tweet_text)
@@ -50,7 +47,6 @@ def get_test_from_db():
         if "RT" not in tweet_text:
             tweet_text = username_re.sub('', tweet_text)
             tweet_text = url_re.sub('', tweet_text)
-            tweet_text = punctuation_re.sub('', tweet_text)
             tweet_text = articles_pronouns_re.sub(' ', tweet_text)
             tweet_text = tweet_text.strip()
             tweet_list.append(tweet_text)
@@ -82,21 +78,22 @@ def create_training_set(tweet_list):
     train_set = []
     for item in tweet_list:
         token_list = t.tokenize(item)
-        # token_list = negation_marking(token_list)
+        token_list = negation_marking(token_list)
         #this will turn into the feature extraction function
-        true_count = 0
-        false_count = 0
+        score = 0
         for token in token_list:
             if token in positive_words:
-                true_count += 1
+                score += 1
             if token in negative_words:
-                false_count += 1
-        if true_count > false_count:
-            train_set.append((token_list, "positive"))
-        if false_count > true_count:
-            train_set.append((token_list, "negative"))
-        # if true_count == false_count:
-        #     train_set.append((token_list, "neutral"))
+                score -= 1
+            if has_pos_emoticon(token):
+                score += 2
+            if has_neg_emoticon(token):
+                score -= 2
+        if score > 0:
+            train_set.append((token_list, 'positive'))
+        if score < 0:
+            train_set.append((token_list, 'negative'))
     return train_set
 
 def get_words_in_tweets(train_set):
@@ -135,7 +132,7 @@ def main():
     test_set = create_training_set(test_list)
     test_set = apply_features(extract_features, test_set)
     print classify.accuracy(classifier, test_set)
-    print classifier.classify(extract_features(['all', 'death', 'threats']))
+    print classifier.classify(extract_features(['I', 'hate', 'you']))
 
 if __name__ == ("__main__"):
     main()
