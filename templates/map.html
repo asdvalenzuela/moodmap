@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-<div id='map-one' class='map'> </div>
+<div id='map-one' class='map'> </div>Hi
 <script>
 	L.mapbox.accessToken = 'pk.eyJ1IjoiYXNkdiIsImEiOiJYY3BLVFFJIn0.95ta0d-qxicw8FR70TEJ9w';
 
@@ -20,34 +20,33 @@
       scrollWheelZoom: false
   })
 
-  {{% for coord in coordinate_list %}}
-    L.marker([coord[0][0], coord[0][1]], {
-      icon: L.mapbox.marker.icon({
-          'marker-size': 'large',
-          'marker-symbol': 'bus',
-          'marker-color': '#fa0'
-      })
-      }).addTo(map);
-  {{% endfor %}}
+  var markers = function() {
+    $.get("/coordinates", function(data) {
+    for (i = 0; i < data.length ; i++) {
+      if (i % 2 == 0) {
+        L.marker([data[i]['lat_'], data[i]['long_']], {
+        icon: L.mapbox.marker.icon({
+            'marker-size': 'large',
+            'marker-color': '#FCB514'
+        })
+        }).addTo(map)
+        .bindPopup(data[i]['text']);
+      }
+      else {
+        L.marker([data[i]['lat_'], data[i]['long_']], {
+        icon: L.mapbox.marker.icon({
+            'marker-size': 'large',
+            'marker-color': '#53868B'
+        })
+        }).addTo(map)
+        .bindPopup(data[i]['text']);
+        }
+    }
+  })}
 
-  $.ajax({
-    url: "/geojson",
-    type: "GET"
-    })
-    .done( function(geojson){L.mapbox.featureLayer().setGeoJSON(geojson).addTo(map);})
-
-  // $.ajax({
-  //   url: "/test",
-  //   type: "GET"
-  //   })
-  //   .done( function(geojson){L.mapbox.featureLayer().setGeoJSON(geojson).addTo(map);})
-  // console.log(j)
-  // var myLayer = L.mapbox.featureLayer().loadURL("/geojson").addTo(map);
-  
-  function displayPoints(j) {
-    alert("in displayPoints")
-    console.log(j)
-  }
+  setInterval(function () {
+    markers();
+    }, 10000);
 
 </script>
 </body>
