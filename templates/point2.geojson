@@ -1,0 +1,133 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+	{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.8172287,
+          40.7012797
+        ]
+      },
+      "properties": {
+        "title": "NEW TWEET",
+        "marker-color": "#9c89cc",
+        "marker-size": "medium",
+        "marker-symbol": "building"
+      }
+    },
+	{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.73645052,
+          40.73285912
+        ]
+      },
+      "properties": {
+        "title": "Can any of my friends come over and watch a movie with me 😩",
+        "marker-color": "#9c89cc",
+        "marker-size": "medium",
+        "marker-symbol": "building"
+      }
+    },
+	{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.99370748,
+          40.75314365
+        ]
+      },
+      "properties": {
+        "title": "Are dreams made of cheese, or is cheese made of dreams? Discuss.",
+        "marker-color": "#9c89cc",
+        "marker-size": "medium",
+        "marker-symbol": "building"
+      }
+    },
+	{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.9986247,
+          40.74548761
+        ]
+      },
+      "properties": {
+        "title": "I can never decide if I'm experiencing a huge sense of accomplishment or despair whenever I make a high-volume cheese purchase.",
+        "marker-color": "#9c89cc",
+        "marker-size": "medium",
+        "marker-symbol": "building"
+      }
+    },
+	{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0814841,
+          40.7033897
+        ]
+      },
+      "properties": {
+        "title": "@Bre_Bombb so who cares.they need to be scared up",
+        "marker-color": "#9c89cc",
+        "marker-size": "medium",
+        "marker-symbol": "building"
+      }
+    },
+	{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.0,
+          0.0
+        ]
+      },
+      "properties": {
+        "title": "@PowerFancy likewise",
+        "marker-color": "#9c89cc",
+        "marker-size": "medium",
+        "marker-symbol": "building"
+      }
+    },
+	{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.98187519,
+          40.77490676
+        ]
+      },
+      "properties": {
+        "title": "I'm at AMC Loews Lincoln Square 13 - @amctheatres for Interstellar in 4K Digital in New York, NY https://t.co/k0ptmq8vDy",
+        "marker-color": "#9c89cc",
+        "marker-size": "medium",
+        "marker-symbol": "building"
+      }
+    },
+	{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.79957926,
+          40.70985485
+        ]
+      },
+      "properties": {
+        "title": "I have a really good feeling that winter break will be great.",
+        "marker-color": "#9c89cc",
+        "marker-size": "medium",
+        "marker-symbol": "building"
+      }
+    }
+  ]
+}

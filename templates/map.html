@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>Twitter Mood Map</title>
+  <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
+  <style>
+    body { margin:0; padding:0; }
+    .map { position:absolute; top:0; bottom:0; width:100%; }
+  </style>
+</head>
+<body>
+<div id='map-one' class='map'> </div>
+<script>
+	L.mapbox.accessToken = 'pk.eyJ1IjoiYXNkdiIsImEiOiJYY3BLVFFJIn0.95ta0d-qxicw8FR70TEJ9w';
+
+  var map = L.mapbox.map('map-one', 'asdv.k6h5h7cf', {
+      scrollWheelZoom: false
+  })
+
+  {{% for coord in coordinate_list %}}
+    L.marker([coord[0][0], coord[0][1]], {
+      icon: L.mapbox.marker.icon({
+          'marker-size': 'large',
+          'marker-symbol': 'bus',
+          'marker-color': '#fa0'
+      })
+      }).addTo(map);
+  {{% endfor %}}
+
+  $.ajax({
+    url: "/geojson",
+    type: "GET"
+    })
+    .done( function(geojson){L.mapbox.featureLayer().setGeoJSON(geojson).addTo(map);})
+
+  // $.ajax({
+  //   url: "/test",
+  //   type: "GET"
+  //   })
+  //   .done( function(geojson){L.mapbox.featureLayer().setGeoJSON(geojson).addTo(map);})
+  // console.log(j)
+  // var myLayer = L.mapbox.featureLayer().loadURL("/geojson").addTo(map);
+  
+  function displayPoints(j) {
+    alert("in displayPoints")
+    console.log(j)
+  }
+
+</script>
+</body>
+
+</html>

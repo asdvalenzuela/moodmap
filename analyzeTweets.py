@@ -1,12 +1,12 @@
 from pymongo import MongoClient
 from nltk import FreqDist, NaiveBayesClassifier
-from nltk.probability import ELEProbDist
 from nltk import classify
 from nltk.classify import apply_features
 import ChrisPottsTokenizer as CPT
 from OpinionLexicon import positive_words, negative_words
 import re
 from emoticonCheck import *
+from random import shuffle
 
 # creates connection to db
 client = MongoClient()
@@ -24,10 +24,10 @@ url_re = re.compile(url, re.VERBOSE | re.I | re.UNICODE)
 articles_pronouns = r"""(\s+)(a|an|and|the)(\s+)"""
 articles_pronouns_re = re.compile(articles_pronouns, re.VERBOSE | re.I | re.UNICODE)
 
-def get_corpus_from_db():
+def get_pos_from_db():
     """Retrieves documents from database, preprocesses and returns the text of each tweet."""
-    tweet_list = []
-    for tweet in db.search_tweets.find().limit(2000):
+    tweets = []
+    for tweet in db.positive_tweets.find().limit(4600):
         tweet_text = tweet["text"]
         # remove retweets, usernames, and links from tweet
         if "RT" not in tweet_text:
@@ -35,13 +35,33 @@ def get_corpus_from_db():
             tweet_text = url_re.sub('', tweet_text)
             tweet_text = articles_pronouns_re.sub(' ', tweet_text)
             tweet_text = tweet_text.strip()
-            tweet_list.append(tweet_text)
+            token_list = t.tokenize(tweet_text)
+            tweets.append((token_list, "positive"))
+
+    shuffle(tweets)
+    tweet_list = tweets[:2000]
+    test_list = tweets[2000:]
+    return [tweet_list, test_list]
+
+def get_neg_from_db():
+    """Retrieves documents from database, preprocesses and returns the text of each tweet."""
+    tweet_list = []
+    for tweet in db.negative_tweets.find().limit(4200):
+        tweet_text = tweet["text"]
+        # remove retweets, usernames, and links from tweet
+        if "RT" not in tweet_text:
+            tweet_text = username_re.sub('', tweet_text)
+            tweet_text = url_re.sub('', tweet_text)
+            tweet_text = articles_pronouns_re.sub(' ', tweet_text)
+            tweet_text = tweet_text.strip()
+            token_list = t.tokenize(tweet_text)
+            tweet_list.append((token_list, "negative"))
     return tweet_list
 
 def get_test_from_db():
     """Retrieves documents from database, preprocesses and returns the text of each tweet."""
     tweet_list = []
-    for tweet in db.search_tweetsNY.find().limit(2000):
+    for tweet in db.search_tweetsNY.find().limit(4000):
         tweet_text = tweet["text"]
         # remove retweets, usernames, and links from tweet
         if "RT" not in tweet_text:
@@ -49,7 +69,8 @@ def get_test_from_db():
             tweet_text = url_re.sub('', tweet_text)
             tweet_text = articles_pronouns_re.sub(' ', tweet_text)
             tweet_text = tweet_text.strip()
-            tweet_list.append(tweet_text)
+            token_list = t.tokenize(tweet_text)
+            tweet_list.append((token_list))
     return tweet_list
 
 t = CPT.Tokenizer()
@@ -78,22 +99,22 @@ def create_training_set(tweet_list):
     train_set = []
     for item in tweet_list:
         token_list = t.tokenize(item)
-        token_list = negation_marking(token_list)
+        # token_list = negation_marking(token_list)
         #this will turn into the feature extraction function
-        score = 0
-        for token in token_list:
-            if token in positive_words:
-                score += 1
-            if token in negative_words:
-                score -= 1
-            if has_pos_emoticon(token):
-                score += 2
-            if has_neg_emoticon(token):
-                score -= 2
-        if score > 0:
-            train_set.append((token_list, 'positive'))
-        if score < 0:
-            train_set.append((token_list, 'negative'))
+        # score = 0
+        # for token in token_list:
+        #     if token in positive_words:
+        #         score += 1
+        #     if token in negative_words:
+        #         score -= 1
+        #     if has_pos_emoticon(token):
+        #         score += 2
+        #     if has_neg_emoticon(token):
+        #         score -= 2
+        # if score > 0:
+        train_set.append((token_list, 'positive'))
+        # if score < 0:
+        #     train_set.append((token_list, 'negative'))
     return train_set
 
 def get_words_in_tweets(train_set):
@@ -119,32 +140,38 @@ def extract_features(tweet):
 
 def main():
     global word_features
-    tweet_list = get_corpus_from_db()
-    train_set = create_training_set(tweet_list)
-    word_features = get_word_features(get_words_in_tweets(train_set))
+    tweet_list, test_list = get_pos_from_db()
+    tweet_list2 = get_neg_from_db()
+    tweet_list = tweet_list + tweet_list2
+    # train_set = create_training_set(tweet_list)
+    word_features = get_word_features(get_words_in_tweets(tweet_list))
     # creates list of tuples, each tuple consists of a dictionary of features and a label
-    training_set = apply_features(extract_features, train_set)
+    training_set = apply_features(extract_features, tweet_list)
     # train the classifier with the training set
     classifier = NaiveBayesClassifier.train(training_set)
     
     # now test the classifier on tweets from NYC
-    test_list = get_test_from_db()
-    test_set = create_training_set(test_list)
-    test_set = apply_features(extract_features, test_set)
+    # test_list = get_test_from_db()
+    test_set = apply_features(extract_features, test_list)
     print classify.accuracy(classifier, test_set)
+    print classifier.classify(extract_features(["thank", "you", "for", "the", "help", "you're", 'the', 'best']))
+    print classifier.classify(extract_features(["Im", 'so', 'happy', 'this', 'is', 'great']))
+    print classifier.classify(extract_features(['You\'re', 'the', 'worst']))
     print classifier.classify(extract_features(['I', 'hate', 'you']))
+
+
+    # errors = []
+    # for (text, label) in test_set:
+    #     guess = classifier.classify(extract_features(text))
+    #     if guess != label:
+    #         errors.append( (label, guess, text) )
+    # print errors
+
+
+
 
 if __name__ == ("__main__"):
     main()
-
-# train_set = apply_features(text_features, tweet_dict)
-# test_set = apply_features(text_features, ?)
-
-# classifier = nltk.NaiveBayesClassifier.train(train_set)
-
-# print classifier.classify(text_features(tweet1))
-# print classifier.classify(gender_features(tweet2))
-# print nltk.classify.accuracy(classifier, test_set)
 
 # feature_list = []
 #   for token in neg_token_list:
