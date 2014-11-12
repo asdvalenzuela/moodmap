@@ -16,37 +16,45 @@
 <script>
 	L.mapbox.accessToken = 'pk.eyJ1IjoiYXNkdiIsImEiOiJYY3BLVFFJIn0.95ta0d-qxicw8FR70TEJ9w';
 
-  var map = L.mapbox.map('map-one', 'asdv.k6h5h7cf', {
-      scrollWheelZoom: false
-  })
+    var map = L.mapbox.map('map-one', 'asdv.k6h5h7cf', {scrollWheelZoom: false}).setView([37.7516, -122.4477], 9);
 
-  var markers = function() {
-    $.get("/coordinates", function(data) {
-    for (i = 0; i < data.length ; i++) {
-      if (i % 2 == 0) {
-        L.marker([data[i]['lat_'], data[i]['long_']], {
-        icon: L.mapbox.marker.icon({
-            'marker-size': 'large',
-            'marker-color': '#FCB514'
-        })
-        }).addTo(map)
-        .bindPopup(data[i]['text']);
-      }
-      else {
-        L.marker([data[i]['lat_'], data[i]['long_']], {
-        icon: L.mapbox.marker.icon({
-            'marker-size': 'large',
-            'marker-color': '#53868B'
-        })
-        }).addTo(map)
-        .bindPopup(data[i]['text']);
+    markerlist = []
+
+    // checks each tweet to see if it has already been added
+    var check_ids = function(data) {
+        for (i = 0; i < data.length; i++) {
+            id_str = data[i]['id_str'];
+            if ($.inArray(id_str, markerlist)) != -1) {
+                create_marker(id_str);
+            }   
         }
     }
-  })}
 
-  setInterval(function () {
-    markers();
-    }, 10000);
+    // creates a marker for new tweets
+    var create_marker = function(id_str) {
+        id_str = L.marker([data[i]['lat_'], data[i]['long_']], {
+                icon: L.mapbox.marker.icon({
+                    'marker-size': 'small',
+                    'marker-color': '#FCB514'
+                })
+                })
+                .bindPopup(data[i]['text']);
+                markerlist.push(id_str);
+    }
+
+    // gets tweet list from database via AJAX
+    var markers = function() {
+        $.get("/coordinates", function(data) {
+            check_ids(data);
+            marker_layer = L.layerGroup(markerlist);
+            marker_layer.addTo(map);
+          })}
+
+    // calls
+    setInterval(function () {
+        markers();
+        marker_layer.clearLayers()
+        }, 3000);
 
 </script>
 </body>

@@ -56,7 +56,7 @@ while True:
 
 
 
- 
+ #throw away non-geodata before adding to db
 # the following code uses twitter stream API to get tweets from SF area
 # class listener(StreamListener):
 
@@ -69,4 +69,4 @@ while True:
 
 # twitterStream = Stream(auth, listener())
 # #swlong, swlat, nelong, nelat
-# twitterStream.filter(locations=[-122.50,36.8,-121.75,37.8], languages=None)
+# twitterStream.filter(locations=[-122.50,36.8,-121.75,37.8], languages="None")

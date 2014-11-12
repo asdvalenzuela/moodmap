@@ -1,6 +1,5 @@
 from pymongo import MongoClient
-from nltk import FreqDist, NaiveBayesClassifier
-from nltk import classify
+from nltk import FreqDist, NaiveBayesClassifier, classify
 from nltk.classify import apply_features
 import ChrisPottsTokenizer as CPT
 from OpinionLexicon import positive_words, negative_words
@@ -127,6 +126,7 @@ def get_words_in_tweets(train_set):
 def get_word_features(wordlist):
     """Creates a frequency distribution so that words that occur more times in the set are weighted"""
     wordlist = FreqDist(wordlist)
+    #throw out here, then check where the words are , optimization problem
     word_features = wordlist.keys()
     return word_features
 
@@ -152,8 +152,10 @@ def main():
     
     # now test the classifier on tweets from NYC
     # test_list = get_test_from_db()
+    # this is essentially a map
     test_set = apply_features(extract_features, test_list)
     print classify.accuracy(classifier, test_set)
+    print classifier.show_most_informative_features(30)
     print classifier.classify(extract_features(["thank", "you", "for", "the", "help", "you're", 'the', 'best']))
     print classifier.classify(extract_features(["Im", 'so', 'happy', 'this', 'is', 'great']))
     print classifier.classify(extract_features(['You\'re', 'the', 'worst']))
