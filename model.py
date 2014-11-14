@@ -13,3 +13,5 @@ def get_tweets_from_db():
                                     "text": tweet["text"], "id_str": tweet["id_str"] })
     return coordinate_list
 
+def update_doc(id_str, score):
+    db.stream_tweets.update({'id_str': id_str}, {"$set": {"score": score}})
