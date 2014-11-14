@@ -34,6 +34,8 @@ class listener(StreamListener):
 				tweet['id_str'] = data['id_str']
 				tweet['text'] = data['text'] 
 				tweet['screen_name'] = data['user']['screen_name']
+
+				
 				stream.insert(tweet)
 				return True
 		else:

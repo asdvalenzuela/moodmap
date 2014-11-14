@@ -17,13 +17,15 @@ def return_coords():
     f = open('NBclassifier.pickle', 'rb')
     classifier = pickle.load(f)
     coordinate_list = model.get_tweets_from_db()
+    print len(coordinate_list)
     for tweet in coordinate_list:
-        if 'score' not in tweet:
-            tweet_text = tweet['text']
-            token_list = clean_and_tokenize(tweet_text)
-            score = classifier.classify(best_word_features(token_list))
-            tweet['score'] = score
-            model.update_doc(tweet['id_str'], tweet['score'])
+        # would it be faster to complete next two lines on database, create field for tokenized tweet?
+        tweet_text = tweet['text']
+        token_list = clean_and_tokenize(tweet_text)
+        score = classifier.classify(best_word_features(token_list))
+        tweet['score'] = score
+        model.update_doc(tweet['id_str'], tweet['score'])
+        print "finished"
     f.close()
     return Response(json.dumps(coordinate_list), mimetype='application/json')
 
