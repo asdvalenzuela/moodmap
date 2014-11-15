@@ -1,10 +1,6 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, jsonify
 import model
 import json
-import pickle
-from analyzeTweetsClean import best_word_features, clean_and_tokenize
-
-
 
 app = Flask(__name__)
 
@@ -14,20 +10,12 @@ def display_map():
 
 @app.route('/coordinates')
 def return_coords():
-    f = open('NBclassifier.pickle', 'rb')
-    classifier = pickle.load(f)
     coordinate_list = model.get_tweets_from_db()
     print len(coordinate_list)
-    for tweet in coordinate_list:
-        # would it be faster to complete next two lines on database, create field for tokenized tweet?
-        tweet_text = tweet['text']
-        token_list = clean_and_tokenize(tweet_text)
-        score = classifier.classify(best_word_features(token_list))
-        tweet['score'] = score
-        model.update_doc(tweet['id_str'], tweet['score'])
-        print "finished"
-    f.close()
-    return Response(json.dumps(coordinate_list), mimetype='application/json')
+    tweet = coordinate_list[0]
+    model.update_doc(tweet['id_str'])
+    print "finished"
+    return jsonify(tweet)
 
 if __name__ == "__main__":
     app.run(debug = True)

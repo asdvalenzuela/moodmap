@@ -2,20 +2,27 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Twitter Mood Map</title>
-  <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
+    <meta charset="utf-8">
+    <title>Twitter Mood Map</title>
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
+    <script src="//js.pusher.com/2.2/pusher.min.js" type="text/javascript"></script>
+    <script src="/static/js/map.js"></script>
   <style>
     body { margin:0; padding:0; }
-    .map { position:absolute; top:0; bottom:0; width:100%; }
+    .map { position:absolute; left:10%; top:0; bottom:0; width:90%; }
+    .sidebar { width:10%; padding:20px; }
   </style>
 </head>
 
 <body>
-    <div id='map-one' class='map'> </div>Oops! Something's wrong with the map!
-    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="/static/js/map.js"></script>
+    <div class="sidebar">
+        <div id="slider-range" style="height:250px;"></div>
+    </div>
+    <div id='map-one' class='map'> </div>
 </body>
 
 </html>

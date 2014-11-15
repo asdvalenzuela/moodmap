@@ -1,6 +1,15 @@
 import os
 import pymongo
 import json
+import pickle
+import pusher
+from analyzeTweetsClean import best_word_features, clean_and_tokenize
+
+p = pusher.Pusher(
+  os.environ.get('PUSHER_APP_ID'),
+  os.environ.get('PUSHER_KEY'),
+  os.environ.get('PUSHER_SECRET')
+)
 
 conn = pymongo.MongoClient()
 db = conn.tweet_database
@@ -34,8 +43,16 @@ class listener(StreamListener):
 				tweet['id_str'] = data['id_str']
 				tweet['text'] = data['text'] 
 				tweet['screen_name'] = data['user']['screen_name']
+				token_list = clean_and_tokenize(data['text'])
 
-				
+				f = open('NBclassifier.pickle', 'rb')
+				classifier = pickle.load(f)
+				score = classifier.classify(best_word_features(token_list))
+				f.close()
+
+				tweet['score'] = score
+
+				p['tweet_map'].trigger('new_tweet', tweet)
 				stream.insert(tweet)
 				return True
 		else:
@@ -45,6 +62,6 @@ class listener(StreamListener):
 		print status
 
 twitterStream = Stream(auth, listener())
-#swlong, swlat, nelong, nelat
-#this is for the entire USA: locations=[-124.848974, 24.396308,-66.885444, 49.384358]
+# #swlong, swlat, nelong, nelat
+# #this is for the entire USA: locations=[-124.848974, 24.396308,-66.885444, 49.384358]
 twitterStream.filter(locations=[-122.50,36.8,-121.75,37.8], languages=["en"])
