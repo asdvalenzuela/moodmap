@@ -11,11 +11,7 @@ def display_map():
 @app.route('/coordinates')
 def return_coords():
     coordinate_list = model.get_tweets_from_db()
-    print len(coordinate_list)
-    tweet = coordinate_list[0]
-    model.update_doc(tweet['id_str'])
-    print "finished"
-    return jsonify(tweet)
+    return Response(json.dumps(coordinate_list), mimetype='application/json')
 
 if __name__ == "__main__":
     app.run(debug = True)
