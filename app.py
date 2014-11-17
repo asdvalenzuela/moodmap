@@ -8,6 +8,10 @@ app = Flask(__name__)
 def display_map():
     return render_template('map.html')
 
+@app.route("/about")
+def display_about():
+    return render_template('about.html')
+
 @app.route('/coordinates')
 def return_coords():
     coordinate_list = model.get_tweets_from_db()

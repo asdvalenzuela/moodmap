@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Twitter Mood Map</title>
+    <title>Happy California</title>
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -12,15 +12,48 @@
     <script src="//js.pusher.com/2.2/pusher.min.js" type="text/javascript"></script>
     <script src="/static/js/map.js"></script>
   <style>
-    body { margin:0; padding:0; }
-    .map { position:absolute; left:10%; top:0; bottom:0; width:90%; }
-    .sidebar { width:10%; padding:20px; }
+    .topbar { width:100%; display:inline-block;}
+    .title {display:inline-block;}
+    .navbar {display:inline-block; margin-left: 61%;}
+    a { color: #000;}
+    p { font-family: Helvetica, Helvetica, Arial, sans-serif; font-weight:100; }
+    body { margin:0; padding:0; background-color:#FFF; }
+    .map { position:absolute; top:10%; bottom:0; width:100%; border: 1px; border-style: solid; border-color: #000;}
+    .sidebar { position: absolute; width:10%; padding-left:20px; margin-top:5%; z-index: 9990; }
+    h2 { font-family: Helvetica, Helvetica, Arial, sans-serif; font-weight:100; padding:10px;}
+    h3 { font-family: Helvetica, Helvetica, Arial, sans-serif; font-weight:100;}
+    #slider-range { margin-left: 30%; margin-top: 10%; height:250px; border-radius: 25px;}
+    .ui-widget-content {border: 1px solid #000; background: #FFF; font-weight: bold;}
+    .ui-widget-header {border: 1px solid #000; background: #E3E3E3; font-weight: bold;}
+    #selectable .ui-selected { border: 0.25px solid #000; font-weight: 600;}
+    #sad { background-color: #BDE0F2;}
+    #happy { background-color: #F7E699; }
+    #selectable { list-style-type: none; margin: 0; padding: 0; width: 80%;}
+    #selectable li { margin: 3px; padding: 0.4em; font-size: 0.75em; font-weight: normal; font-family: Helvetica, Helvetica, Arial, sans-serif; height: 18px; text-align: center;  border-radius: 25px; }
+    .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {border: 1px solid #000; background: #FFF;}
+    label { font-size: 0.75em; font-weight: normal ; text-align: center; font-family: Helvetica, Helvetica, Arial, sans-serif;}
   </style>
 </head>
-
 <body>
+    <div class="topbar">
+        <div class="title">
+        <h2>Happy California: Sentiment of Live Tweets</h2>
+        </div>
+        <div class="navbar">
+            <p><a href="/about">About</a></p>
+        </div>
+    </div>
     <div class="sidebar">
-        <div id="slider-range" style="height:250px;"></div>
+        <ol id="selectable">
+            <li class="ui-widget-content">All Tweets</li>
+            <li class="ui-widget-content" id="happy">Happy Tweets</li>
+            <li class="ui-widget-content" id="sad">Sad Tweets</li>
+        </ol>
+        <p>
+            <label for="amount">Time of Day (0-24 hrs)</label>
+            <input type="text" id="amount" readonly style="margin-left: 35px; font-size: 0.75em; border:0; font-weight:normal; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; background-color: #E3E3E3; width: 32px;">
+        </p>
+        <div id="slider-range"></div>
     </div>
     <div id='map-one' class='map'> </div>
 </body>

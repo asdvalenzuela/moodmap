@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     L.mapbox.accessToken = 'pk.eyJ1IjoiYXNkdiIsImEiOiJYY3BLVFFJIn0.95ta0d-qxicw8FR70TEJ9w';
 
-    var map = L.mapbox.map('map-one', 'asdv.k6h5h7cf', {scrollWheelZoom: false}).setView([37.7516, -122.4477], 9);
+    var map = L.mapbox.map('map-one', 'asdv.k6h5h7cf', {scrollWheelZoom: false}).setView([37.66, -121.57], 9);
 
     var pusher = new Pusher('998f83412af68dd3edb3');
     var channel = pusher.subscribe('tweet_map');
@@ -25,14 +25,41 @@ $(document).ready(function () {
         marker_layer.addLayer(newmarker);
     }});
 
+    marker_layer.on('layeradd', function(e) {
+        map.panTo(e.layer.getLatLng());
+    });
+
+    // marker_layer.on('click', function(e) {
+    //     map.panTo(e.layer.getLatLng());
+    // });
+
+    // $( "#slider-range" ).slider({
+    //   orientation: "vertical",
+    //   range: true,
+    //   values: [ 17, 67 ],
+    //   slide: function( event, ui ) {
+    //     console.log("slide!");
+    //     console.log(ui);
+    //   }
+    // });
+
+    $(function() {
     $( "#slider-range" ).slider({
       orientation: "vertical",
       range: true,
-      values: [ 17, 67 ],
+      max: 24,
+      values: [ 8, 16 ],
       slide: function( event, ui ) {
-        console.log("slide!");
-        console.log(ui);
+        $( "#amount" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] );
       }
+    });
+
+    $( "#amount" ).val($( "#slider-range" ).slider( "values", 0 ) +
+      " - " + $( "#slider-range" ).slider( "values", 1 ) );
+    });
+
+    $(function() {
+    $( "#selectable" ).selectable();
     });
 
     var setMarker = function(tweet, color) {
@@ -48,10 +75,10 @@ $(document).ready(function () {
 
     channel.bind('new_tweet', function(tweet) {
         if (tweet['score'] == '4') {
-            setMarker(tweet, '#FCB514');
+            setMarker(tweet, '#F7E699');
         }
         if (tweet['score'] == '0') {
-            setMarker(tweet, '#5F9F9F');
+            setMarker(tweet, '#BDE0F2');
         }
         marker_layer.addLayer(newmarker);
         newmarker.openPopup();
