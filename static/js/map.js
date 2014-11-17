@@ -12,6 +12,7 @@ $(document).ready(function () {
 
     var layerlist = [];
     var newmarker = 'x';
+    var data = [];
 
     $.get("/coordinates", function(data) {
         for (i = 0; i < data.length; i++) {
@@ -33,16 +34,6 @@ $(document).ready(function () {
     //     map.panTo(e.layer.getLatLng());
     // });
 
-    // $( "#slider-range" ).slider({
-    //   orientation: "vertical",
-    //   range: true,
-    //   values: [ 17, 67 ],
-    //   slide: function( event, ui ) {
-    //     console.log("slide!");
-    //     console.log(ui);
-    //   }
-    // });
-
     $(function() {
     $( "#slider-range" ).slider({
       orientation: "vertical",
@@ -58,17 +49,67 @@ $(document).ready(function () {
       " - " + $( "#slider-range" ).slider( "values", 1 ) );
     });
 
+    var filterTweets = function(tweetType) {
+        if (tweetType == 'all-tweets') {
+            map.eachLayer(function(layer) {
+                if (layer["options"]) {
+                    if ("title" in layer["options"]) {
+                        if ((layer["options"]["title"]) == '4') {
+                            layer.setOpacity(1);
+                        }
+                        if ((layer["options"]["title"]) == '0') {
+                            layer.setOpacity(1);
+                        }
+                    }
+                }
+            });
+        }
+        if (tweetType == 'sad-tweets') {
+            map.eachLayer(function(layer) {
+                if (layer["options"]) {
+                    if ("title" in layer["options"]) {
+                        if ((layer["options"]["title"]) == '4') {
+                                layer.setOpacity(0);
+                        }
+                        if ((layer["options"]["title"]) == '0') {
+                                layer.setOpacity(1);
+                        }
+                    }
+                }
+            });
+        }
+        if (tweetType == 'happy-tweets') {
+            map.eachLayer(function(layer) {
+                if (layer["options"]) {
+                    if ("title" in layer["options"]) {
+                        if ((layer["options"]["title"]) == '0') {
+                                layer.setOpacity(0);
+                        }
+                        if ((layer["options"]["title"]) == '4') {
+                                layer.setOpacity(1);
+                        }
+                    }
+                }
+            });
+        }
+    };
+
     $(function() {
-    $( "#selectable" ).selectable();
+        $("#selectable").selectable({
+            selected: function (event, ui) {
+                var tweetType = ui.selected.id;
+                filterTweets(tweetType);
+            }
+        });
     });
 
     var setMarker = function(tweet, color) {
         newmarker = L.marker([tweet['loc'][1], tweet['loc'][0]], {
             icon: L.mapbox.marker.icon({
-                'title': tweet['text'],
                 'marker-size': 'small',
                 'marker-color': color
-        })
+        }),
+            title: tweet['score']
         })
         .bindPopup(tweet['text']);
     };
