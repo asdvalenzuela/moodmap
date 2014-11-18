@@ -18,10 +18,10 @@ $(document).ready(function () {
         for (i = 0; i < data.length; i++) {
             console.log(data[i]);
         if (data[i]['score'] == '4') {
-            setMarker(data[i], '#FCB514');
+            setMarker(data[i], happyIcon);
         }
         if (data[i]['score'] == '0') {
-            setMarker(data[i], '#5F9F9F');
+            setMarker(data[i], sadIcon);
         }
         marker_layer.addLayer(newmarker);
     }});
@@ -52,6 +52,7 @@ $(document).ready(function () {
     var filterTweets = function(tweetType) {
         if (tweetType == 'all-tweets') {
             map.eachLayer(function(layer) {
+                console.log(layer["options"]);
                 if (layer["options"]) {
                     if ("title" in layer["options"]) {
                         if ((layer["options"]["title"]) == '4') {
@@ -103,23 +104,32 @@ $(document).ready(function () {
         });
     });
 
-    var setMarker = function(tweet, color) {
-        newmarker = L.marker([tweet['loc'][1], tweet['loc'][0]], {
-            icon: L.mapbox.marker.icon({
-                'marker-size': 'small',
-                'marker-color': color
-        }),
-            title: tweet['score']
-        })
+    var sadIcon = L.icon({
+        iconUrl: '../static/img/sad.png',
+        iconSize: [16, 24],
+        iconAnchor: [8, 12],
+    });
+
+    var happyIcon = L.icon({
+
+        iconUrl: '../static/img/happy.png',
+        iconSize: [16, 24],
+        iconAnchor: [8, 12],
+    });
+
+    var setMarker = function(tweet, icon_type) {
+        newmarker = L.marker([tweet['loc'][1], tweet['loc'][0]],
+            { icon: icon_type, title: tweet['score']}
+        )
         .bindPopup(tweet['text']);
     };
 
     channel.bind('new_tweet', function(tweet) {
         if (tweet['score'] == '4') {
-            setMarker(tweet, '#F7E699');
+            setMarker(tweet, happyIcon);
         }
         if (tweet['score'] == '0') {
-            setMarker(tweet, '#BDE0F2');
+            setMarker(tweet, sadIcon);
         }
         marker_layer.addLayer(newmarker);
         newmarker.openPopup();

@@ -1,8 +1,12 @@
-from flask import Flask, render_template, Response, jsonify
+from flask import Flask, render_template, Response, jsonify, send_file
 import model
 import json
 
 app = Flask(__name__)
+
+@app.route('/sad.png')
+def display_sad_icon():
+    return Response('sad.png', mimetype='image/png')
 
 @app.route('/')
 def display_map():
