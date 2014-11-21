@@ -3,17 +3,9 @@
 
 <head>
     <meta charset="utf-8">
-    <title>About Happy California</title>
-  <style>
-    .topbar { width:100%; display:inline-block;}
-    .title {display:inline-block;}
-    .navbar {display:inline-block; margin-left: 85%;}
-    a { color: #000;}
-    body { margin:0; padding:0; background-color:#FFF; }
-    .text { position:absolute; top:10%; bottom:0; width:100%; border: 1px; border-style: solid; border-color: #000; background-color: #87CAFA}
-    h2 { font-family: Helvetica, Helvetica, Arial, sans-serif; font-weight:100; padding:10px;}
-    p { padding: 10px ; font-family: Helvetica, Helvetica, Arial, sans-serif; font-weight:100;}
-  </style>
+    <title>About</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,600,400' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/static/css/about.css">
 </head>
 <body>
     <div class="topbar">
@@ -21,12 +13,40 @@
         <h2>About</h2>
         </div>
         <div class="navbar">
-            <p><a href="/">Back to Map</a></p>
+            <a href="/">Back to Map</a>
         </div>
-    <div class="text">
-        <p>
-           All about the project. Woop!
-        </p>
+    </div>
+    <div class="text-box">
+        <div class="another-box">
+            <h2 class="blurb">The Project</h2>
+            <p class="text">
+                Happy California receives live, geotagged tweets filtered for the Bay Area from the Twitter Stream API. Some tweets from Southern California are included on the map due to Twitter users' ability to tag their tweet with a "place" in addition to the geotag. If the latitude longitude coordinate boundary box of the "place" they specify overlaps with the Bay Area, and the tweet is geotagged, it passes through the Twitter Stream API's filter.
+                <br><br>
+                The tweets are analyzed by a pickled NLTK Naive Bayes classifier for positive or negative sentiment as they are received from the Twitter Stream API. Pusher Websocket API listens for new tweets, and pushes the analyzed tweets to the frontend. Each tweet is also stored in Mongo DB.
+                <br><br>
+                The frontend receives the tweet, checks if the tweet is positive or negative, and maps the tweet with the appropriate emoticon using Leaflet/Mapbox. The user is then able to click on each mapped emoticon to view the text of the tweet. In addition, the user is able to click on the control buttons to view only positive tweets, only negative tweets, all tweets, or clear the entire map to start over.
+                <br><br>
+                When the page first loads, the frontend detects the current hour of the day and loads all tweets from 12 am today to the present hour. The user can then adjust the slider to view tweets by other hour ranges.
+                <br><br> 
+                For the sentiment analysis, a training set of 1.6 million pre-labeled tweets was used. The set was obtained from Sentiment140 and can be found<a href="http://help.sentiment140.com/for-students"> here.</a> Each tweet was preprocessed to remove any usernames, links, and articles included in the text, then tokenized. The tokenization process I used preserved emoticons so that the presence and absence of positive or negative emotions could be used in the sentiment analysis.
+                <br><br>
+                <br><br>
+                <br><br>
+                <br><br>
+                <br><br>
+                <br><br>
+            </p>
+        <div class="emoji-box">
+            <img src="/static/img/emojis.png" height="700" width="125"/>
+        </div>        
+            <h2 class="blurb">The Developer</h2>
+            <p class="text" id="Bio">
+                Before buckling down at Hackbright, Alaina spent two years in the tech world as a technical support agent at Google and Dropcam. There she experienced first hand the fast-paced, creative, and collaborative nature of programming. She quickly developed the desire to build and develop products herself instead of just supporting them. She believes her experience engaging with customers and resolving software bugs will make her a more user-focused engineer, a perspective she believes is very important to maintain. Alaina has a B.A. in Latin American Studies and Marine Biology from the University of Chicago, where she learned to think analytically and ask hard questions. She enjoys dogs in costumes, delicious pies, and modern dance.
+            </p>
+        </div>
+        <div class="image-box">
+            <img src="/static/img/AlainaValenzuela.jpg" height="150" width="125"/>
+        </div>
     </div>
 </body>
 

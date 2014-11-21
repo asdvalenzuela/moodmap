@@ -4,6 +4,7 @@ import json
 import pickle
 import pusher
 from analyzeTweetsClean import best_word_features, clean_and_tokenize
+import time
 
 p = pusher.Pusher(
   os.environ.get('PUSHER_APP_ID'),
@@ -36,7 +37,8 @@ class listener(StreamListener):
 		if ('coordinates' in data):
 			if data['coordinates'] != None:
 				tweet = {}
-				tweet['created_at'] = data['created_at']
+				tweet['date'] = time.strftime("%m %d %y")
+				tweet['hour'] = time.strftime("%H")
 				tweet['loc'] = data['coordinates']['coordinates']
 				tweet['entities'] = data['entities']
 				tweet['id'] = data['id']

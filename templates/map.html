@@ -6,59 +6,45 @@
     <title>Happy California</title>
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:700,600,400' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/static/css/map.css">
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
     <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
     <script src="//js.pusher.com/2.2/pusher.min.js" type="text/javascript"></script>
     <script src="/static/js/map.js"></script>
-  <style>
-    .topbar { width:100%; display:inline-block;}
-    .title {display:inline-block;}
-    .navbar {display:inline-block; margin-left: 61%;}
-    a { color: #000;}
-    p { font-family: Helvetica, Helvetica, Arial, sans-serif; font-weight:100; }
-    body { margin:0; padding:0; background-color:#FFF; }
-    .map { position:absolute; top:10%; bottom:0; width:100%; border: 1px; border-style: solid; border-color: #000;}
-    .sidebar { position: absolute; width:10%; padding-left:20px; margin-top:5%; z-index: 9990; }
-    h2 { font-family: Helvetica, Helvetica, Arial, sans-serif; font-weight:100; padding:10px;}
-    h3 { font-family: Helvetica, Helvetica, Arial, sans-serif; font-weight:100;}
-    #slider-range { margin-left: 30%; margin-top: 10%; height:250px; border-radius: 25px;}
-    .ui-widget-content {border: 1px solid #000; background: #FFF; font-weight: bold;}
-    .ui-widget-header {border: 1px solid #000; background: #E3E3E3; font-weight: bold;}
-    #selectable .ui-selected { border: 0.25px solid #000; font-weight: 600;}
-    #sad-tweets { background-color: #BDE0F2;}
-    #happy-tweets { background-color: #F7E699; }
-    #all-tweets { background-color: #FFF ;}
-    #selectable { list-style-type: none; margin: 0; padding: 0; width: 80%;}
-    #selectable { list-style-type: none; margin: 0; padding: 0; width: 80%;}
-    #selectable { list-style-type: none; margin: 0; padding: 0; width: 80%;}
-    #selectable li { margin: 3px; padding: 0.4em; font-size: 0.75em; font-weight: normal; font-family: Helvetica, Helvetica, Arial, sans-serif; height: 18px; text-align: center;  border-radius: 25px; }
-    .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {border: 1px solid #000; background: #FFF;}
-    label { font-size: 0.75em; font-weight: normal ; text-align: center; font-family: Helvetica, Helvetica, Arial, sans-serif;}
-  </style>
 </head>
 <body>
     <div class="topbar">
         <div class="title">
-        <h2>Happy California: Sentiment of Live Tweets</h2>
+            <h2>Happy California: Sentiment of Live Tweets</h2>
         </div>
         <div class="navbar">
             <p><a href="/about">About</a></p>
-        </div>
+        </div>    
+        <div class="message-flasher">
+            <p>Done viewing past tweets? Now resuming live tweet stream.</p>
+        </div> 
     </div>
     <div class="sidebar">
         <ol id="selectable">
-            <li class="ui-widget-content" id="all-tweets">All Tweets</li>
+            <li class="ui-widget-content ui-selected" id="all-tweets">All Tweets</li>
             <li class="ui-widget-content" id="happy-tweets">Happy Tweets</li>
             <li class="ui-widget-content" id="sad-tweets">Sad Tweets</li>
+            <li class="ui-widget-content" id="clear-button">Clear Map</li>
         </ol>
-        <p>
-            <label for="amount">Time of Day (0-24 hrs)</label>
-            <input type="text" id="amount" readonly style="margin-left: 35px; font-size: 0.75em; border:0; font-weight:normal; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; background-color: #E3E3E3; width: 32px;">
-        </p>
+        <br>
+        <div class='org-box'>
+            <label for="amount">Show Tweets by Hour</label>
+            <input type="text" id="amount" readonly style="font-size: 0.75em; border:0; font-weight: 600; font-family: 'Open Sans', sans-serif; background-color: #6895E3; width: 90%; text-align:center;">
+        </div>
+        <p>End of Day</p>
         <div id="slider-range"></div>
+        <p>Start of Day</p>
+        <br>
     </div>
-    <div id='map-one' class='map'> </div>
+    <div id='map-one' class='map custom-popup'>
+    </div>
 </body>
 
 </html>

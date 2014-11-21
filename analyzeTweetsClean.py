@@ -10,7 +10,6 @@ from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist, ConditionalFreqDist
 import pickle
 
-
 # creates connection to db
 client = MongoClient()
 db = client.tweet_database

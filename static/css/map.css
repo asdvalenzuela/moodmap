@@ -1,0 +1,188 @@
+.topbar { 
+    height: 10%; 
+    width: 100%; 
+    display: inline-block;
+}
+.title {
+    display: inline-block; 
+    margin-left: 1%;
+}
+.navbar { 
+    display: inline-block; 
+    margin-left: 61%;
+}
+.message-flasher { 
+    position: absolute; 
+    background-color: #ED7777; 
+    width: 25%; 
+    height: 30px; 
+    margin-top: 1%; 
+    margin-left: 35%; 
+    transition-property: all; 
+    transition-duration: .5s; 
+    transition-timing-function: cubic-bezier(0, 1, 0.5, 1); 
+    border-radius: 5px; 
+    border: 1px solid #000; 
+    padding-bottom: 10px;}
+.movement { 
+    margin-top: -2.75%; 
+}
+.message-flasher p {
+    margin-left: 0; 
+    text-align: center; 
+    font-family: 'Open Sans', sans-serif; 
+    font-weight: 600; 
+    font-size: .75em; 
+    color: #000;}
+a:hover { 
+    color: #416AB5;
+} 
+a { 
+    color: #000; 
+    font-family: 'Open Sans', sans-serif; 
+    font-weight: 100; 
+    font-size: 1.5em;
+}
+p { 
+    margin-left: 25%; 
+    font-family: 'Open Sans', sans-serif; 
+    font-weight: 600; 
+    font-size: .75em;
+}
+.org-box { 
+    border: 1px solid #000; 
+    margin: 3%; 
+    background-color: #6895E3; 
+    width: 90%; 
+    padding: 1%; 
+    border-radius: 5px; 
+    text-align: center;
+}
+body { 
+    margin: 0; 
+    background-color: #FFF; 
+    cursor: pointer;
+}
+.map { 
+    position:absolute; top:10%; 
+    bottom: 0; 
+    width: 100%; 
+    border: 1px; 
+    border-style: solid; 
+    border-color: #000;
+}
+.sidebar { 
+    position: absolute; 
+    width: 10%; 
+    padding-left: 1%; 
+    z-index: 9990; 
+    margin-top: 2%
+}
+h2 { 
+    font-family: 'Open Sans', sans-serif; 
+    font-weight: 100;
+}
+h3 { 
+    font-family: 'Open Sans', sans-serif; 
+    font-weight: 100;
+}
+#slider-range { 
+    margin-left: 40%; 
+    margin-top: 10%; 
+    height: 250px; 
+    border-radius: 5px;
+}
+.ui-widget-content {
+    border: 1px solid #000; 
+    background: #416AB5; 
+    font-weight: normal;
+}
+.ui-widget-header {
+    border: 1px solid #000; 
+    background: #6895E3; 
+    font-weight: normal;}
+#selectable li:hover { 
+    background-color: #FFF;
+}
+#selectable .ui-selected {
+    border: 1px solid #000; 
+    font-weight: 700; 
+    background-color: #FFF;}
+#sad-tweets { 
+    background-color: #BDE0F2;
+}
+#happy-tweets { 
+    background-color: #F7E699; 
+}
+#clear-button { 
+    background-color:#ED7777; 
+}
+#all-tweets { 
+    background-color: #EDB477;
+}
+#selectable { 
+    list-style-type: none; 
+    margin: 0; 
+    padding: 0; 
+    width: 80%;
+}
+#selectable li { 
+    margin-left: 17%; 
+    margin-top: 2%; 
+    padding-top: 0.5em; 
+    padding-bottom: 0.5em; 
+    font-size: 0.75em; 
+    font-family: 'Open Sans', sans-serif; 
+    height: 10%; 
+    text-align: center;  
+    border-radius: 5px; 
+    width: 90%; 
+    font-weight: 600
+}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 1px solid #000; 
+    background: #FFF;
+}
+label { 
+    font-size: 0.75em; 
+    font-weight: 600 ; 
+    text-align: center; 
+    font-family: 'Open Sans', sans-serif;
+}
+.sad-popup { 
+    background-color: #BDE0F2; 
+    font-size: 1em;
+    font-weight: 100;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 24px; 
+    padding: 5%;
+}
+.happy-popup { 
+    background: #F7E699; 
+    font-size: 1em;
+    font-weight: 100;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 24px;
+    padding: 5%;
+}
+.custom-popup .leaflet-popup-content-wrapper {
+    background: #FFF;
+    color: #000;
+    font-size: 1.5em;
+    font-weight: 100;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 24px;
+    border-radius: 5px;
+    }
+.custom-popup .leaflet-popup-content-wrapper a {
+    color: rgba(255,255,255,0.5);
+    }
+.custom-popup .leaflet-popup-tip-container {
+    width: 30px;
+    height: 15px;
+    }
+.custom-popup .leaflet-popup-tip {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 15px solid #FFF;
+    }

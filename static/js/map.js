@@ -2,8 +2,10 @@ $(document).ready(function () {
 
     L.mapbox.accessToken = 'pk.eyJ1IjoiYXNkdiIsImEiOiJYY3BLVFFJIn0.95ta0d-qxicw8FR70TEJ9w';
 
-    var map = L.mapbox.map('map-one', 'asdv.k6h5h7cf', {scrollWheelZoom: false}).setView([37.66, -121.57], 9);
+    var map = L.mapbox.map('map-one', 'asdv.k6h5h7cf', {zoomControl: false, scrollWheelZoom: false}).setView([37.66, -121.57], 9);
 
+    new L.Control.Zoom({ position: 'topright' }).addTo(map);
+   
     var pusher = new Pusher('998f83412af68dd3edb3');
     var channel = pusher.subscribe('tweet_map');
 
@@ -14,14 +16,16 @@ $(document).ready(function () {
     var newmarker = 'x';
     var data = [];
 
+    var currentTime = new Date();
+    var hour = currentTime.getHours();
+
     $.get("/coordinates", function(data) {
         for (i = 0; i < data.length; i++) {
-            console.log(data[i]);
         if (data[i]['score'] == '4') {
-            setMarker(data[i], happyIcon);
+            setMarker(data[i], happyIcon, "Happy Tweet:");
         }
         if (data[i]['score'] == '0') {
-            setMarker(data[i], sadIcon);
+            setMarker(data[i], sadIcon, "Sad Tweet:");
         }
         marker_layer.addLayer(newmarker);
     }});
@@ -36,23 +40,66 @@ $(document).ready(function () {
 
     $(function() {
     $( "#slider-range" ).slider({
-      orientation: "vertical",
-      range: true,
-      max: 24,
-      values: [ 8, 16 ],
-      slide: function( event, ui ) {
-        $( "#amount" ).val(ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-      }
+        orientation: "vertical",
+        range: true,
+        max: 24,
+        values: [ 0, hour ],
+        slide: function( event, ui ) {
+            if (ui.values[0] === 0) {
+                sTime = '12am';
+            }
+            if (0 < ui.values[0] && ui.values[0] < 12) {
+                sTime = ui.values[0] + 'am';
+            }
+            if (ui.values[0] === 12) {
+                sTime = '12pm';
+            }
+            if (12 < ui.values[0] && ui.values[0] < 24) {
+                sTime = ui.values[0] - 12 + 'pm';
+            }
+            if (ui.values[1] === 24) {
+                eTime = '12pm';
+            }
+            if (0 < ui.values[1] && ui.values[1] < 12) {
+                eTime = ui.values[1] + 'am';
+            }
+            if (ui.values[1] === 12) {
+                eTime = '12pm';
+            }
+            if (12 < ui.values[1] && ui.values[1] < 24) {
+                eTime = ui.values[1] - 12 + 'pm';
+            }
+            console.log(sTime);
+            $( "#amount" ).val( "(from " + sTime + " to " + eTime + ")" );
+        },
+        change: function( event, ui) {
+            var startTime = ui.values[0];
+            var endTime = ui.values[1];
+            var time_range_url = "/get_tweets_by_time?startTime=" + startTime + "&endTime=" + endTime;
+            $.get(time_range_url, function(data){
+                map.eachLayer(function(layer) {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+                });
+                for (i = 0; i < data.length; i++) {
+                    if (data[i]['score'] == '4') {
+                        setMarker(data[i], happyIcon, "Happy Tweet:");
+                    }
+                    if (data[i]['score'] == '0') {
+                        setMarker(data[i], sadIcon, "Sad Tweet:");
+                    }
+                marker_layer.addLayer(newmarker);
+                }
+            });
+        }
     });
-
-    $( "#amount" ).val($( "#slider-range" ).slider( "values", 0 ) +
-      " - " + $( "#slider-range" ).slider( "values", 1 ) );
+    $( "#amount" ).val( "(from 12am to now)");
     });
 
     var filterTweets = function(tweetType) {
         if (tweetType == 'all-tweets') {
             map.eachLayer(function(layer) {
-                console.log(layer["options"]);
                 if (layer["options"]) {
                     if ("title" in layer["options"]) {
                         if ((layer["options"]["title"]) == '4') {
@@ -99,7 +146,16 @@ $(document).ready(function () {
         $("#selectable").selectable({
             selected: function (event, ui) {
                 var tweetType = ui.selected.id;
+                if (tweetType == 'clear-button') {
+                    map.eachLayer(function(layer) {
+                        if (layer instanceof L.Marker) {
+                            map.removeLayer(layer);
+                        }
+                        });
+                }
+                else {
                 filterTweets(tweetType);
+                }
             }
         });
     });
@@ -108,6 +164,7 @@ $(document).ready(function () {
         iconUrl: '../static/img/sad.png',
         iconSize: [16, 24],
         iconAnchor: [8, 12],
+        popupAnchor: [0, -20]
     });
 
     var happyIcon = L.icon({
@@ -115,30 +172,88 @@ $(document).ready(function () {
         iconUrl: '../static/img/happy.png',
         iconSize: [16, 24],
         iconAnchor: [8, 12],
+        popupAnchor: [0, -20]
     });
 
-    var setMarker = function(tweet, icon_type) {
+    var setMarker = function(tweet, icon_type, sentiment) {
+        var popup_type = null;
+        if (icon_type == happyIcon) {
+            popup_type = "<div class=\"happy-popup\"</div><b>" + sentiment + "</b><br>" + tweet['text'];
+        }
+        if (icon_type == sadIcon) {
+            popup_type = "<div class=\"sad-popup\"</div><b>" + sentiment + "</b><br>" + tweet['text'];
+        }
         newmarker = L.marker([tweet['loc'][1], tweet['loc'][0]],
             { icon: icon_type, title: tweet['score']}
         )
-        .bindPopup(tweet['text']);
+        .bindPopup(popup_type);
+        // .update({background: white});
     };
 
+    var userInteracting = false;
+
     channel.bind('new_tweet', function(tweet) {
-        if (tweet['score'] == '4') {
-            setMarker(tweet, happyIcon);
+        if (!userInteracting) {
+        if ($('.ui-selected')[0].id == 'happy-tweets' || $('.ui-selected')[0].id == 'all-tweets') {
+            if (tweet['score'] == '4') {
+                setMarker(tweet, happyIcon, "Happy Tweet:");
+            }
         }
-        if (tweet['score'] == '0') {
-            setMarker(tweet, sadIcon);
+        if ($('.ui-selected')[0].id == 'sad-tweets' || $('.ui-selected')[0].id == 'all-tweets') {
+            if (tweet['score'] == '0') {
+                setMarker(tweet, sadIcon, "Sad Tweet:");
+            }
         }
         marker_layer.addLayer(newmarker);
         newmarker.openPopup();
+
         // layerlist.push(marker_layer);
         // if (layerlist.length > 50) {
         //     map.removeLayer(layerlist[0]);
         //     console.log("removed");
         // }
+    }
     });
+
+    // $('#slider-range').on('mousedown', function() {
+    //     userInteracting = true;
+    // });
+    // $('#slider-range').on('mouseup', function() {
+    //     setTimeout(function() {
+    //         userInteracting = false;
+    //         $('.message-flasher').addClass("movement");
+    //             setTimeout(function() {
+    //              $('.message-flasher').removeClass("movement");
+    //             }, 5000);
+    //     }, 3000);
+    // });
+
+    var alarm = {
+      remind: function(aMessage) {
+        $('.message-flasher').addClass('movement');
+        setTimeout(function() {
+            $('.message-flasher').removeClass('movement');
+            userInteracting = false;
+            }, 3000);
+        delete this.timeoutID;
+      },
+
+      setup: function() {
+        userInteracting = true;
+        this.cancel();
+        var self = this;
+        this.timeoutID = window.setTimeout(function(msg) {self.remind(msg);}, 10000);
+      },
+
+      cancel: function() {
+        if(typeof this.timeoutID == "number") {
+          window.clearTimeout(this.timeoutID);
+          delete this.timeoutID;
+        }
+      }
+    };
+    $('#slider-range').on('mouseup', function()  { alarm.setup(); });
+
 
     // $("body").on("click", function() {
     //     map.eachLayer(function(layer) {
