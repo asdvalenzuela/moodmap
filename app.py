@@ -6,7 +6,7 @@ import time
 app = Flask(__name__)
 
 current_date = time.strftime("%m %d %y") 
-current_hour = time.strftime("%H")
+current_hour = int(time.strftime("%H"))
 
 @app.route('/')
 def display_map():
@@ -25,6 +25,8 @@ def return_coords():
 def get_tweets_by_date_range():
     start_time = request.args.get('startTime')    
     end_time = request.args.get('endTime')
+    start_time = int(start_time)
+    end_time = int(end_time)
     coordinate_list = model.get_tweets_by_time(current_date, start_time, end_time) 
     return Response(json.dumps(coordinate_list), mimetype='application/json')
 

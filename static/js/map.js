@@ -69,7 +69,6 @@ $(document).ready(function () {
             if (12 < ui.values[1] && ui.values[1] < 24) {
                 eTime = ui.values[1] - 12 + 'pm';
             }
-            console.log(sTime);
             $( "#amount" ).val( "(from " + sTime + " to " + eTime + ")" );
         },
         change: function( event, ui) {
@@ -77,20 +76,24 @@ $(document).ready(function () {
             var endTime = ui.values[1];
             var time_range_url = "/get_tweets_by_time?startTime=" + startTime + "&endTime=" + endTime;
             $.get(time_range_url, function(data){
-                map.eachLayer(function(layer) {
-                if (layer instanceof L.Marker) {
-                    map.removeLayer(layer);
-                }
-                });
+                var display_list = [];
                 for (i = 0; i < data.length; i++) {
-                    if (data[i]['score'] == '4') {
-                        setMarker(data[i], happyIcon, "Happy Tweet:");
-                    }
-                    if (data[i]['score'] == '0') {
-                        setMarker(data[i], sadIcon, "Sad Tweet:");
-                    }
-                marker_layer.addLayer(newmarker);
+                    display_list.push(data[i]['id_str']);
                 }
+                map.eachLayer(function(layer) {
+                    if (layer["options"]) {
+                        if ("title" in layer["options"]) {
+                            var title = layer["options"]["title"].slice(1);
+                                if (display_list.indexOf(title) !== -1) {
+                                    layer.setOpacity(1);
+                                }
+                                else {
+                                    layer.setOpacity(0);
+                                }
+                            
+                        }
+                    }
+                });
             });
         }
     });
@@ -102,10 +105,10 @@ $(document).ready(function () {
             map.eachLayer(function(layer) {
                 if (layer["options"]) {
                     if ("title" in layer["options"]) {
-                        if ((layer["options"]["title"]) == '4') {
+                        if ((layer["options"]["title"].slice(0,1)) == '4') {
                             layer.setOpacity(1);
                         }
-                        if ((layer["options"]["title"]) == '0') {
+                        if ((layer["options"]["title"].slice(0,1)) == '0') {
                             layer.setOpacity(1);
                         }
                     }
@@ -116,10 +119,10 @@ $(document).ready(function () {
             map.eachLayer(function(layer) {
                 if (layer["options"]) {
                     if ("title" in layer["options"]) {
-                        if ((layer["options"]["title"]) == '4') {
+                        if ((layer["options"]["title"].slice(0,1)) == '4') {
                                 layer.setOpacity(0);
                         }
-                        if ((layer["options"]["title"]) == '0') {
+                        if ((layer["options"]["title"].slice(0,1)) == '0') {
                                 layer.setOpacity(1);
                         }
                     }
@@ -130,10 +133,10 @@ $(document).ready(function () {
             map.eachLayer(function(layer) {
                 if (layer["options"]) {
                     if ("title" in layer["options"]) {
-                        if ((layer["options"]["title"]) == '0') {
+                        if ((layer["options"]["title"].slice(0,1)) == '0') {
                                 layer.setOpacity(0);
                         }
-                        if ((layer["options"]["title"]) == '4') {
+                        if ((layer["options"]["title"].slice(0,1)) == '4') {
                                 layer.setOpacity(1);
                         }
                     }
@@ -184,7 +187,7 @@ $(document).ready(function () {
             popup_type = "<div class=\"sad-popup\"</div><b>" + sentiment + "</b><br>" + tweet['text'];
         }
         newmarker = L.marker([tweet['loc'][1], tweet['loc'][0]],
-            { icon: icon_type, title: tweet['score']}
+            { icon: icon_type, title: tweet['score']+  tweet['id_str']}
         )
         .bindPopup(popup_type);
         // .update({background: white});

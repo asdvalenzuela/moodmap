@@ -38,7 +38,7 @@ class listener(StreamListener):
 			if data['coordinates'] != None:
 				tweet = {}
 				tweet['date'] = time.strftime("%m %d %y")
-				tweet['hour'] = time.strftime("%H")
+				tweet['hour'] = int(time.strftime("%H"))
 				tweet['loc'] = data['coordinates']['coordinates']
 				tweet['entities'] = data['entities']
 				tweet['id'] = data['id']
