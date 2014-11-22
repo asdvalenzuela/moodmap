@@ -1,0 +1,11 @@
+Flask==0.10.1
+Jinja2==2.7.3
+MarkupSafe==0.23
+Werkzeug==0.9.6
+backports.ssl-match-hostname==3.4.0.2
+certifi==14.05.14
+gnureadline==6.3.3
+itsdangerous==0.24
+pusher==0.8
+pyzmq==14.4.1
+wsgiref==0.1.2
