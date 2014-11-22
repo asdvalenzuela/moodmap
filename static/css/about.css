@@ -11,9 +11,10 @@
     margin-left: 87%;
 }
 .blurb {
-    margin-left: 2%; 
+    margin-left: 1%; 
     font-family: 'Open Sans', sans-serif; 
     font-weight: 100;
+    color: #FFF;
 }
 a:hover {
     color: #416AB5;
@@ -36,13 +37,14 @@ body {
     height: 150%; 
     width: 100%; 
     border: 1px solid #000; 
-    background-color: #59A9EB;
+    background-color: #6c8593;
 }
 .text { 
-    margin-left: 13%; 
+    margin-left: 1%; 
     width: 70%; 
     text-align: justify; 
-    background-color: #BDE0F2;
+    background-color: #6c8593;
+    color: #000;
 }
 h2 { 
     font-family: 'Open Sans', sans-serif; 
@@ -50,8 +52,9 @@ h2 {
 }
 p { 
     padding: 1%; 
-    font-family: 'Open Sans', sans-serif; 
+    font-family: 'EB Garamond', serif;
     font-weight: 100;
+    color: #000;
 }
 .another-box { 
     display: inline-block; 

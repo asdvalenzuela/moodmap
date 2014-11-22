@@ -6,6 +6,9 @@ import pusher
 from analyzeTweetsClean import best_word_features, clean_and_tokenize
 import time
 
+print time.strftime("%m %d %y")
+print int(time.strftime("%H"))
+
 p = pusher.Pusher(
   os.environ.get('PUSHER_APP_ID'),
   os.environ.get('PUSHER_KEY'),
