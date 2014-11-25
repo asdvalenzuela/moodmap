@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     L.mapbox.accessToken = 'pk.eyJ1IjoiYXNkdiIsImEiOiJYY3BLVFFJIn0.95ta0d-qxicw8FR70TEJ9w';
 
-    var map = L.mapbox.map('map-one', 'asdv.k6h5h7cf', {zoomControl: false, scrollWheelZoom: false}).setView([37.66, -121.57], 9);
+    var map = L.mapbox.map('map-one', 'asdv.k6h5h7cf', {zoomControl: false, scrollWheelZoom: false}).setView([37.66, -122], 10);
 
     new L.Control.Zoom({ position: 'topright' }).addTo(map);
    
@@ -21,14 +21,15 @@ $(document).ready(function () {
 
     $.get("/coordinates", function(data) {
         for (i = 0; i < data.length; i++) {
-        if (data[i]['score'] == '4') {
-            setMarker(data[i], happyIcon, "Happy Tweet:");
-        }
-        if (data[i]['score'] == '0') {
-            setMarker(data[i], sadIcon, "Sad Tweet:");
-        }
+            if (data[i]['score'] == '4') {
+                setMarker(data[i], happyIcon, "Happy Tweet");
+            }
+            if (data[i]['score'] == '0') {
+                setMarker(data[i], sadIcon, "Sad Tweet");
+            }
         marker_layer.addLayer(newmarker);
-    }});
+        }
+    });
 
     marker_layer.on('layeradd', function(e) {
         map.panTo(e.layer.getLatLng());
@@ -181,30 +182,45 @@ $(document).ready(function () {
     var setMarker = function(tweet, icon_type, sentiment) {
         var popup_type = null;
         if (icon_type == happyIcon) {
-            popup_type = "<div class=\"happy-popup\"</div><b>" + sentiment + "</b><br>" + tweet['text'];
+            popup_type = "<div class=\"happy-popup\"</div><b>" + sentiment + " from</b><figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] + "</figcaption></figure><br>" + tweet['text'];
         }
         if (icon_type == sadIcon) {
-            popup_type = "<div class=\"sad-popup\"</div><b>" + sentiment + "</b><br>" + tweet['text'];
+            popup_type = "<div class=\"sad-popup\"</div><b>" + sentiment + " from</b><figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] +  "</figcaption></figure><br>" + tweet['text'];
         }
         newmarker = L.marker([tweet['loc'][1], tweet['loc'][0]],
             { icon: icon_type, title: tweet['score']+  tweet['id_str']}
         )
         .bindPopup(popup_type);
-        // .update({background: white});
     };
 
+    $(function() {
+        $( "#radio" ).buttonset();
+    });
+
     var userInteracting = false;
+
+    $('input').on('click', function() {
+        if ($('input')[0].checked  === true) {
+            userInteracting = false;
+            $('.slider-content').css('visibility', 'hidden');
+
+        }
+        if ($('input')[0].checked  === false) {
+            userInteracting = true;
+            $('.slider-content').css('visibility', 'visible');
+        }
+    });
 
     channel.bind('new_tweet', function(tweet) {
         if (!userInteracting) {
         if ($('.ui-selected')[0].id == 'happy-tweets' || $('.ui-selected')[0].id == 'all-tweets') {
             if (tweet['score'] == '4') {
-                setMarker(tweet, happyIcon, "Happy Tweet:");
+                setMarker(tweet, happyIcon, "Happy Tweet");
             }
         }
         if ($('.ui-selected')[0].id == 'sad-tweets' || $('.ui-selected')[0].id == 'all-tweets') {
             if (tweet['score'] == '0') {
-                setMarker(tweet, sadIcon, "Sad Tweet:");
+                setMarker(tweet, sadIcon, "Sad Tweet");
             }
         }
         marker_layer.addLayer(newmarker);
@@ -231,31 +247,31 @@ $(document).ready(function () {
     //     }, 3000);
     // });
 
-    var alarm = {
-      remind: function(aMessage) {
-        $('.message-flasher').addClass('movement');
-        setTimeout(function() {
-            $('.message-flasher').removeClass('movement');
-            userInteracting = false;
-            }, 3000);
-        delete this.timeoutID;
-      },
+    // var alarm = {
+    //   remind: function(aMessage) {
+    //     $('.message-flasher').addClass('movement');
+    //     setTimeout(function() {
+    //         $('.message-flasher').removeClass('movement');
+    //         userInteracting = false;
+    //         }, 3000);
+    //     delete this.timeoutID;
+    //   },
 
-      setup: function() {
-        userInteracting = true;
-        this.cancel();
-        var self = this;
-        this.timeoutID = window.setTimeout(function(msg) {self.remind(msg);}, 10000);
-      },
+    //   setup: function() {
+    //     userInteracting = true;
+    //     this.cancel();
+    //     var self = this;
+    //     this.timeoutID = window.setTimeout(function(msg) {self.remind(msg);}, 10000);
+    //   },
 
-      cancel: function() {
-        if(typeof this.timeoutID == "number") {
-          window.clearTimeout(this.timeoutID);
-          delete this.timeoutID;
-        }
-      }
-    };
-    $('#slider-range').on('mouseup', function()  { alarm.setup(); });
+    //   cancel: function() {
+    //     if(typeof this.timeoutID == "number") {
+    //       window.clearTimeout(this.timeoutID);
+    //       delete this.timeoutID;
+    //     }
+    //   }
+    // };
+    // $('#slider-range').on('mouseup', function()  { alarm.setup(); });
 
 
     // $("body").on("click", function() {

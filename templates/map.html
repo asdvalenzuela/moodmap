@@ -20,11 +20,8 @@
             <h2>Happy California: Sentiment of Live Tweets</h2>
         </div>
         <div class="navbar">
-            <p><a href="/about">About</a></p>
-        </div>    
-        <div class="message-flasher">
-            <p>Done viewing past tweets? Now resuming live tweet stream.</p>
-        </div> 
+            <a href="/zipcode_map">Search Tweets by Zipcode</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
     </div>
     <div class="sidebar">
         <ol id="selectable">
@@ -34,15 +31,23 @@
             <li class="ui-widget-content" id="clear-button">Clear Map</li>
         </ol>
         <br>
+    <p id="radio-label">See Live Tweet Stream or Filter by Hour</p>
+    <form>
+        <div id="radio">
+            <input type="radio" id="radio2" name="radio" checked="checked"><label for="radio2">Live</label>
+            <input type="radio" id="radio1" name="radio"><label for="radio1">By Hour</label>
+        </div>
+    </form>
+        <div class='slider-content'>
         <div class='org-box'>
-            <label for="amount">Show Tweets by Hour</label>
             <input type="text" id="amount" readonly style="font-size: 0.75em; border:0; font-weight: 600; font-family: 'Open Sans', sans-serif; background-color: #6895E3; width: 90%; text-align:center;">
         </div>
         <p>End of Day</p>
         <div id="slider-range"></div>
         <p>Start of Day</p>
         <br>
-    </div>
+        </div>
+        </div>
     <div id='map-one' class='map custom-popup'>
     </div>
 </body>

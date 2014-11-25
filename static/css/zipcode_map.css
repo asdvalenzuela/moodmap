@@ -1,0 +1,97 @@
+.topbar { 
+    height: 10%; 
+    width: 100%; 
+    margin-top: 1%;
+}
+.title {
+    display: inline-block; 
+    margin-left: 1%;
+}
+.navbar { 
+    display: inline-block; 
+    margin-left: 76%;
+    margin-top: 2%;
+}
+a:hover { 
+    color: #416AB5;
+} 
+a { 
+    color: #000; 
+    font-family: 'Open Sans', sans-serif; 
+    font-weight: 100; 
+    font-size: 1em;
+    text-decoration: none;
+}
+p { 
+    margin-left: 25%; 
+    font-family: 'Open Sans', sans-serif; 
+    font-weight: 600; 
+    font-size: .75em;
+}
+body { 
+    margin: 0; 
+    background-color: #FFF; 
+    cursor: pointer;
+}
+.map { 
+    position:absolute; top:10%; 
+    bottom: 0; 
+    width: 100%; 
+    border: 1px; 
+    border-style: solid; 
+    border-color: #000;
+}
+h2 { 
+    font-family: 'Open Sans', sans-serif; 
+    font-weight: 100;
+}
+[type="button"] {
+    background-color: #EDB477;
+    border: 1px solid #000;
+}
+.sidebar { 
+    background-color: #FFF;
+    position: absolute; 
+    width: 13%; 
+    margin-left: 1%;
+    padding: 1%;
+    z-index: 9990; 
+    border-radius: 5px;
+}
+.sad-popup { 
+    background-color: #BDE0F2; 
+    font-size: 1em;
+    font-weight: 100;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 24px; 
+    padding: 5%;
+}
+.happy-popup { 
+    background: #F7E699; 
+    font-size: 1em;
+    font-weight: 100;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 24px;
+    padding: 5%;
+}
+.custom-popup .leaflet-popup-content-wrapper {
+    background: #FFF;
+    color: #000;
+    font-size: 1.5em;
+    font-weight: 100;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 24px;
+    border-radius: 5px;
+}
+.custom-popup .leaflet-popup-content-wrapper a {
+    color: rgba(255,255,255,0.5);
+}
+.custom-popup .leaflet-popup-tip-container {
+    width: 30px;
+    height: 15px;
+}
+.custom-popup .leaflet-popup-tip {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 15px solid #FFF;
+}
