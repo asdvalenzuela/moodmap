@@ -91,24 +91,6 @@ def clean_and_tokenize(tweet):
     token_list = t.tokenize(tweet)
     return token_list
 
-negation_list = ['never', 'no', 'nothing', 'nowhere', 'noone', 'none', 'not', 'haven\'t', 'havent', 'hasn\'t', 'hasnt', 
-                'can\'t', 'cant', 'couldn\'t', 'couldnt', 'shouldn\'t', 'shouldnt', 'won\'t', 'wont', 'wouldn\'t', 'wouldnt', 
-                'dont', 'doesnt', 'didnt', 'isnt', 'arent', 'aint', 'don\'t', 'doesn\'t', 'didn\'t', 'isn\'t', 'aren\'t', 'ain\'t']
-
-punctuation_list = ['.', ':', ';', '!', '?']
-
-def negation_marking(token_list):
-    """Append a _NEG suffix to every word between a negation and a punctuation mark."""
-    neg = False
-    for index in range(len(token_list)):
-        if token_list[index] in negation_list:
-            neg = True
-        elif token_list[index] in punctuation_list:
-            neg = False 
-        elif neg:
-            token_list[index] += "_NEG"
-    return token_list
-
 def extract_features(tweet):
     """"""
     global word_features

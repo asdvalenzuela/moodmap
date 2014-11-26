@@ -5,30 +5,21 @@ Happy California receives live, geotagged tweets and creates a real-time measure
 
 ### Technology
 
-MongoDB, Leaflet/Mapbox, Pusher Websockets API, Scikit-learn, NLTK, Regex, Jquery, Javascript, Jquery UI, HTML, CSS, Flask, Python, Twitter API, Pickle
+MongoDB, Leaflet/Mapbox, Pusher Websockets API, Scikit-learn, NLTK, Regex, Jquery, Javascript, Jquery UI, HTML, CSS, Flask, Python, Twitter API, Pickle, Ajax
 
 (Dependencies are listed in requirements.txt)
 
 ##### Sentiment Analysis
-A training set of 1.6 million pre-labeled positive and negative tweets was used to train a Naïve Bayes classifier. The set was obtained from Sentiment140 and can be found in the references section. 
+A training set of 1.6 million pre-labeled positive and negative tweets was used to train a Naïve Bayes classifier. The set was obtained from Sentiment140 and can be found in the references section. Each tweet was preprocessed to remove any usernames, links, and articles, then tokenized. The tokenization process I used preserved emoticons so that the presence and absence of positive or negative emotions could be used as a feature for the analysis. The training set was run through feature extraction and only the most useful features were used to train the classifier. After training, the classifier was then serialized via the python module Pickle, which is then opened and used to classify the incoming live tweets for positive or negative sentiment.
 
-Each tweet in the training set was preprocessed to remove any usernames, links, and articles (the, a, and, the, etc.) included in the text, then tokenized. The tokenization process I used preserved emoticons so that the presence and absence of positive or negative emotions could be used as a feature for the analysis.
-
-![alt tag](https://raw.githubusercontent.com/asdvalenzuela/moodmap/master/static/img/machine_learning_process.png)
-
-The classifier is then serialized via the python module Pickle, which is then opened and used to classify the incoming live tweets for positive or negative sentiment.
-
-Though the classifier used in the final product was created from analyzeTweets.py, which uses NLTK as the analytical library, I included SKanalyzeTweets.py to demonstrate the same process using Scikit-learn.
+The classifier used in the current version of Happy California was created from analyzeTweets.py, which uses NLTK as the analytical library. I included SKanalyzeTweets.py to demonstrate the same process using Scikit-learn.
 
 ##### Database
-The tweets used to train the classifier, the incoming tweets, and the location information for all U.S. zipcodes are stored in MongoDB. Mongo’s ability to store different types of information in a Json-like structure for easy storage and retrieval made it ideal for this use case.
+The tweets used to train the classifier, the incoming tweets from the Twitter Stream API, and the location information for all U.S. zipcodes are stored in MongoDB. Mongo’s ability to store varied data in a JSON-like structure for easy storage and retrieval made it ideal for this use case. Mongo's flexible, dynamic data schemas were also useful, as a relational database was not needed for this project.
 
 ##### Frontend
-The frontend receives the tweet, checks if the tweet is positive or negative, and maps the tweet with the appropriate emoticon using Leaflet/Mapbox. The user is then able to click on each mapped emoticon to view the contents of the tweet, including the screenname, profile image, and tweet text. In addition, the user is able to click on the control buttons on to view only positive tweets, only negative tweets, all tweets, or clear the entire map if it’s getting too crowded.
 
-When the page first loads, the frontend detects the current hour of the day and loads all tweets from 12 am that day to the present hour. The user can then adjust the slider to view tweets by a different hour range.
-
-On the Search by Zipcodes page, the user can enter their zipcode to see tweets analyzed by sentiment from that area. These tweets are from the Twitter search api, and while very recent are not real-time.
+The front-end is composed of a Mapbox (built on Leaflet) map with custom markers and popups, custom CSS, and Jquery UI elements for the buttons and slider. Map interactivity is programmed with a combination of Jquery UI, Javascript, Jquery, and Mapbox/Leaflet Javascript. Pusher Websocket API pushes the incoming tweets to Javascript, where they are mapped with Mapbox/Leaflet. 
 
 ### Structure
 
