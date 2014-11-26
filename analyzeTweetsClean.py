@@ -29,8 +29,6 @@ def create_word_scores():
  
     posWords = []
     negWords = []
-    #http://stackoverflow.com/questions/367155/splitting-a-string-into-words-and-punctuation
-    #breaks up the sentences into lists of individual words (as selected by the input mechanism) and appends 'pos' or 'neg' after each list
     for tweet in postweets:
         posWords.append(tweet[0])
     for tweet in negtweets:

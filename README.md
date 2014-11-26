@@ -13,7 +13,11 @@ MongoDB, Leaflet/Mapbox, Pusher Websockets API, Scikit-learn, NLTK, Regex, Jquer
 (Dependencies are listed in requirements.txt)
 
 ##### Sentiment Analysis
-A training set of 1.6 million pre-labeled positive and negative tweets was used to train a Naïve Bayes classifier. The set was obtained from [Sentiment140](http://help.sentiment140.com/for-students). Each tweet was preprocessed to remove any usernames, links, and articles, then tokenized. The tokenization process preserved emoticons so that the presence and absence of positive or negative emotions could be used as a feature for the analysis. The training set was run through feature extraction and only the most useful features were used to train the classifier. After training, the classifier was then serialized via the python module Pickle, which is then opened and used to classify the incoming live tweets for positive or negative sentiment.
+A training set of 1.6 million pre-labeled positive and negative tweets was used to train a Naïve Bayes classifier. The set was obtained from [Sentiment140](http://help.sentiment140.com/for-students). Each tweet was preprocessed to remove any usernames, links, and articles using regular expressions, then tokenized. The tokenization function preserved emoticons so that the presence and absence of positive or negative emotions could be used as a feature for the analysis. 
+
+The final classifier used only the 10,000 most useful features to train the classifier. To find the most informative features, a frequency distribution and conditional frequency distribution (conditions are positive and negative labels) were built. Each word was scored using a chi-square test, which compares the frequency of the word in each label to the frequency of the word in the whole dataset, and determines whether that difference is significant. After the word was scored, the top n most higly scored words were extracted from each tweet as features. This process served to eliminate a lot of noise, or low-information features, in the dataset, which can decrease performance.
+
+Many different features and combinations of features were used to find the result with the most accuracy in predicting positive and negative tweets, and the highest precision and recalls scores across both labels. After training, the classifier was then serialized via the python module Pickle, which is then opened and used to classify the incoming live tweets for positive or negative sentiment.
 
 The classifier used in the current version of Happy California was created from analyzeTweets.py, which uses NLTK as the analytical library. I included SKanalyzeTweets.py to demonstrate the same process using Scikit-learn.
 
@@ -53,3 +57,5 @@ http://www.laurentluce.com/posts/twitter-sentiment-analysis-using-python-and-nlt
 http://sentiment.christopherpotts.net/ 
 
 http://streamhacker.com/2010/06/16/text-classification-sentiment-analysis-eliminate-low-information-features/
+
+http://andybromberg.com/sentiment-analysis-python/

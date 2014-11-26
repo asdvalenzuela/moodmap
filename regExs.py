@@ -8,10 +8,6 @@ username_re = re.compile(username, re.VERBOSE | re.I | re.UNICODE)
 url = r"""((https?):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)"""
 url_re = re.compile(url, re.VERBOSE | re.I | re.UNICODE)
 
-#remove punctuation from tweet
-punctuation = r"""([^\w\s])"""
-punctuation_re = re.compile(punctuation, re.VERBOSE | re.I | re.UNICODE)
-
 #remove articles from tweet
 articles = r"""(\s+)(a|an|and|the)(\s+)"""
 articles_re = re.compile(articles, re.VERBOSE | re.I | re.UNICODE)
