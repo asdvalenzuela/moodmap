@@ -12,7 +12,9 @@ MongoDB, Leaflet/Mapbox, Pusher Websockets API, Scikit-learn, NLTK, Regex, Jquer
 ##### Sentiment Analysis
 A training set of 1.6 million pre-labeled positive and negative tweets was used to train a Naïve Bayes classifier. The set was obtained from Sentiment140 and can be found in the references section. 
 
-Each tweet was preprocessed to remove any usernames, links, and articles (the, a, and, the, etc.) included in the text, then tokenized. The tokenization process I used preserved emoticons so that the presence and absence of positive or negative emotions could be used as a feature for the analysis.
+Each tweet in the training set was preprocessed to remove any usernames, links, and articles (the, a, and, the, etc.) included in the text, then tokenized. The tokenization process I used preserved emoticons so that the presence and absence of positive or negative emotions could be used as a feature for the analysis.
+
+![alt tag](https://raw.githubusercontent.com/asdvalenzuela/moodmap/master/static/img/machine_learning_process.png)
 
 The classifier is then serialized via the python module Pickle, which is then opened and used to classify the incoming live tweets for positive or negative sentiment.
 
