@@ -3,6 +3,9 @@ Happy California
 
 Happy California receives live, geotagged tweets and creates a real-time measurement of the sentiment balance in the Bay Area. Using natural language processing, sentiment analysis, and machine learning, the tweets are analyzed on the fly and mapped to browse and peruse. Feeling under the weather? Filter for happy tweets. Curious if people are more negative in the morning? Check out the hour-by-hour view. Not from the Bay Area? Enter your zipcode and see the current sentiment balance for your area.
 
+![HappyTweetExample](https://raw.githubusercontent.com/asdvalenzuela/moodmap/master/static/img/HappyTweetExample.png)
+![SadTweetExample](https://github.com/asdvalenzuela/moodmap/blob/master/static/img/SadTweetExample.png)
+
 ### Technology
 
 MongoDB, Leaflet/Mapbox, Pusher Websockets API, Scikit-learn, NLTK, Regex, Jquery, Javascript, Jquery UI, HTML, CSS, Flask, Python, Twitter API, Pickle, Ajax
@@ -20,6 +23,9 @@ The tweets used to train the classifier, the incoming tweets from the Twitter St
 ##### Frontend
 
 The front-end is composed of a Mapbox (built on Leaflet) map with custom markers and popups, custom CSS, and Jquery UI elements for the buttons and slider. Map interactivity is programmed with a combination of Jquery UI, Javascript, Jquery, Ajax, and Mapbox/Leaflet Javascript. Pusher Websocket API pushes the incoming tweets to Javascript, where they are mapped with Mapbox/Leaflet. 
+
+![ViewByHour](https://github.com/asdvalenzuela/moodmap/blob/master/static/img/ViewByHourExample.png)
+![TweetsByZipcode](https://github.com/asdvalenzuela/moodmap/blob/master/static/img/TweetsByZipcodeExample.png)
 
 ### Structure
 
