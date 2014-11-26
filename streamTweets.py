@@ -17,6 +17,9 @@ conn = pymongo.MongoClient()
 db = conn.tweet_database
 stream = db.stream_tweets
 
+f = open('NBclassifier.pickle', 'rb')
+classifier = pickle.load(f)
+
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler, Stream
 
@@ -28,13 +31,15 @@ TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 auth = OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
 auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET)
 
-# the following code uses twitter stream API to get tweets from the US
 class listener(StreamListener):
 
 	def on_data(self, data):
+		"""On receiving data, pushes to frontend and inserts into db."""
 		data = json.loads(data)
+		#ensures tweet has a geotag
 		if ('coordinates' in data):
 			if data['coordinates'] != None:
+				#ensures geotag lies within the Bay Area
 				if (-123 <= data['coordinates']['coordinates'][0] <= -120) and (36 <= data['coordinates']['coordinates'][1] <= 39):
 					tweet = {}
 					tweet['loc'] = data['coordinates']['coordinates']
@@ -46,15 +51,11 @@ class listener(StreamListener):
 					tweet['id_str'] = data['id_str']
 					tweet['text'] = data['text'] 
 					tweet['screen_name'] = data['user']['screen_name']
+					#preprocess and score tweet for sentiment
 					token_list = clean_and_tokenize(data['text'])
-
-					f = open('NBclassifier.pickle', 'rb')
-					classifier = pickle.load(f)
 					score = classifier.classify(best_word_features(token_list))
-					f.close()
-
 					tweet['score'] = score
-
+					#pushes to frontend
 					p['tweet_map'].trigger('new_tweet', tweet)
 					stream.insert(tweet)
 					return True
@@ -65,6 +66,5 @@ class listener(StreamListener):
 		print status
 
 twitterStream = Stream(auth, listener())
-# #swlong, swlat, nelong, nelat
-# #this is for the entire USA: locations=[-124.848974, 24.396308,-66.885444, 49.384358]
+#locations parameter format [SWlong, SWlat, NWlong, NElat]
 twitterStream.filter(locations=[-122.50,36.8,-121.75,37.8], languages=["en"])

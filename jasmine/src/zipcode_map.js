@@ -6,6 +6,10 @@ $(document).ready(function () {
 
     new L.Control.Zoom({ position: 'topright' }).addTo(map);
 
+    var layerlist = [];
+    var newmarker = 'x';
+    var data = [];
+
     $("#zipcode-button").click(function(e) {
         map.eachLayer(function(layer) {
             if (layer instanceof L.Marker) {
@@ -28,10 +32,10 @@ $(document).ready(function () {
             $.get("/get_tweets_by_zipcode", {zipcode: zipcode}, function(data) {
                 for (i = 0; i < data.length; i++) {
                     if (data[i]['score'] == '4') {
-                        newmarker = setMarker(data[i], happyIcon, "Happy Tweet");
+                        setMarker(data[i], happyIcon, "Happy Tweet");
                     }
                     if (data[i]['score'] == '0') {
-                        newmarker = setMarker(data[i], sadIcon, "Sad Tweet");
+                        setMarker(data[i], sadIcon, "Sad Tweet");
                     }
                     marker_layer.addLayer(newmarker);
                 }
@@ -68,7 +72,6 @@ $(document).ready(function () {
             { icon: icon_type, title: tweet['score']+  tweet['id_str']}
         )
         .bindPopup(popup_type);
-        return newmarker;
     };
 
 });

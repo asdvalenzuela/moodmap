@@ -5,8 +5,10 @@ import time
 
 app = Flask(__name__)
 
-current_date = time.strftime("%m %d %y") 
-current_hour = int(time.strftime("%H"))
+def get_current_datetime():
+    current_date = time.strftime("%m %d %y") 
+    current_hour = int(time.strftime("%H"))
+    return (current_date, current_hour)
 
 @app.route('/')
 def display_map():
@@ -19,6 +21,7 @@ def return_coords():
     current_date: string of 'month date year'
     current_hour: integer between 0 and 24
     """
+    current_date, current_hour = get_current_datetime()
     tweet_list = model.get_todays_tweets(current_hour, current_date)
     return Response(json.dumps(tweet_list), mimetype='application/json')
 
@@ -30,10 +33,15 @@ def get_tweets_by_time_range():
     current_date: string of 'month date year'
     start_hour, end_hour: integers between 0 and 24
     """
-    start_hour = int(request.args.get('startTime'))    
-    end_hour = int(request.args.get('endTime'))
+    current_date, current_hour = get_current_datetime()
+    start_hour = request.args.get('startTime')
+    end_hour = request.args.get('endTime')
     tweet_list = model.get_tweets_by_hour(current_date, start_hour, end_hour) 
-    return Response(json.dumps(tweet_list), mimetype='application/json')
+    if len(tweet_list) == 0:
+        #fix this line
+        return "Please enter a valid start and end time."
+    else:
+        return Response(json.dumps(tweet_list), mimetype='application/json')
 
 @app.route("/zipcode_map")
 def display_zipcode_map():
@@ -45,9 +53,6 @@ def get_tweets_by_zipcode():
 
     zipcode: a string with length 5
     """
-    # if len(zipcode) != 5:
-    #     return Response("[]")
-
     zipcode = request.args.get('zipcode')
     geocode = model.get_geocode(zipcode)
     tweet_list = model.get_tweets_by_zipcode(geocode)

@@ -42,6 +42,8 @@ def get_todays_tweets(current_hour, current_date):
                                 "id_str": tweet["id_str"], 
                                 "screen_name": tweet["screen_name"],
                                 "profile_img": tweet["profile_img"],
+                                "date": tweet["date"],
+                                "hour": tweet["hour"],
                                 })
     return tweet_list
 
@@ -52,21 +54,31 @@ def get_tweets_by_hour(current_date, start_hour, end_hour):
     current_date: string of 'month date year'
     start_hour, end_hour: integers between 0 and 24
     """
-    tweet_list = []
-    for tweet in db.stream_tweets.find({"date": current_date, 
-                                        "hour" : {"$gte": start_hour, 
-                                                  "$lte": end_hour}
-                                        }):     
-        #ensures tweet has a geotag   
-        if "loc" in tweet:
-            tweet_list.append({"loc": tweet["loc"], 
-                                "text": tweet["text"],
-                                "score": tweet["score"], 
-                                "id_str": tweet["id_str"], 
-                                "screen_name": tweet["screen_name"],
-                                "profile_img": tweet["profile_img"],
-                                })
-    return tweet_list
+    try:
+        start_hour = int(start_hour)
+        end_hour = int(end_hour)
+    except:
+        return []
+    if not ((0 <= start_hour <= 24) and (0 <= end_hour <= 24)):
+        return []
+    else:
+        tweet_list = []
+        for tweet in db.stream_tweets.find({"date": current_date, 
+                                            "hour" : {"$gte": start_hour, 
+                                                      "$lte": end_hour}
+                                            }):     
+            #ensures tweet has a geotag   
+            if "loc" in tweet:
+                tweet_list.append({"loc": tweet["loc"], 
+                                    "text": tweet["text"],
+                                    "score": tweet["score"], 
+                                    "id_str": tweet["id_str"], 
+                                    "screen_name": tweet["screen_name"],
+                                    "profile_img": tweet["profile_img"],
+                                    "date": tweet["date"],
+                                    "hour": tweet["hour"],
+                                    })
+        return tweet_list
 
 def get_geocode(zipcode):
     """Given a valid zipcode, returns a string of 'latitiude, longitude, radius'.
@@ -96,7 +108,6 @@ def get_tweets_by_zipcode(geocode):
                     data['id_str'] = tweet.id_str
                     data['screen_name'] = tweet.user.screen_name
                     data['profile_img'] = tweet.user.profile_image_url_https
-
                     #preprocess the tweet and score it for sentiment
                     token_list = clean_and_tokenize(data['text'])
                     score = classifier.classify(best_word_features(token_list))
