@@ -10,26 +10,39 @@ MongoDB, Leaflet/Mapbox, Pusher Websockets API, Scikit-learn, NLTK, Regex, Jquer
 (Dependencies are listed in requirements.txt)
 
 ##### Sentiment Analysis
+A training set of 1.6 million pre-labeled positive and negative tweets was used to train a Naïve Bayes classifier. The set was obtained from Sentiment140 and can be found in the references section. 
+
+Each tweet was preprocessed to remove any usernames, links, and articles (the, a, and, the, etc.) included in the text, then tokenized. The tokenization process I used preserved emoticons so that the presence and absence of positive or negative emotions could be used as a feature for the analysis.
+
+The classifier is then serialized via the python module Pickle, which is then opened and used to classify the incoming live tweets for positive or negative sentiment.
+
+Though the classifier used in the final product was created from analyzeTweets.py, which uses NLTK as the analytical library, I included SKanalyzeTweets.py to demonstrate the same process using Scikit-learn.
 
 ##### Database
+The tweets used to train the classifier, the incoming tweets, and the location information for all U.S. zipcodes are stored in MongoDB. Mongo’s ability to store different types of information in a Json-like structure for easy storage and retrieval made it ideal for this use case.
 
 ##### Frontend
+The frontend receives the tweet, checks if the tweet is positive or negative, and maps the tweet with the appropriate emoticon using Leaflet/Mapbox. The user is then able to click on each mapped emoticon to view the contents of the tweet, including the screenname, profile image, and tweet text. In addition, the user is able to click on the control buttons on to view only positive tweets, only negative tweets, all tweets, or clear the entire map if it’s getting too crowded.
+
+When the page first loads, the frontend detects the current hour of the day and loads all tweets from 12 am that day to the present hour. The user can then adjust the slider to view tweets by a different hour range.
+
+On the Search by Zipcodes page, the user can enter their zipcode to see tweets analyzed by sentiment from that area. These tweets are from the Twitter search api, and while very recent are not real-time.
 
 ### Structure
 
-#####(app.py)
+#####app.py
 Core of the flask app, lists all routes.
 
-#####(model.py)
+#####model.py
 All database queries made by the flask app.
 
-#####(analyzeTweets.py)
+#####analyzeTweets.py
 Core of the natural language processing and sentiment analysis. Used to build the Naïve Bayes classifier.
 
-#####(SKanalyzeTweets.py)
+#####SKanalyzeTweets.py
 Another version of analyzeTweets.py using Scikit-learn instead of NLTK.
 
-#####(streamTweets.py)
+#####streamTweets.py
 Establishes connection to Twitter Stream API.
 
 ### References
