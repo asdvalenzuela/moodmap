@@ -2,7 +2,6 @@ import numpy as np
 import regExs as RE
 from pymongo import MongoClient
 import ChrisPottsTokenizer as CPT
-from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn import cross_validation
