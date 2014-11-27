@@ -6,6 +6,7 @@ import time
 app = Flask(__name__)
 
 def get_current_datetime():
+    """Returns current date and hour for use in db queries."""
     current_date = time.strftime("%m %d %y") 
     current_hour = int(time.strftime("%H"))
     return (current_date, current_hour)

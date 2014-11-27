@@ -1,3 +1,4 @@
+//took these out of document ready for testing with Jasmine
 var happyIcon = L.icon({
 
     iconUrl: '../static/img/happy.png',
@@ -70,9 +71,6 @@ $(document).ready(function () {
         map.panTo(e.layer.getLatLng());
     });
 
-    // marker_layer.on('click', function(e) {
-    //     map.panTo(e.layer.getLatLng());
-    // });
 
     $(function() {
     $( "#slider-range" ).slider({

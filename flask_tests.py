@@ -47,8 +47,8 @@ class MyAppUnitTestCase(unittest.TestCase):
 		self.assertTrue(len(data)== 0)
 		
 
-	# def testGet_tweets_by_zipcode(self):
-	# 	self.assertIs(type(model.get_tweets_by_zipcode('43.605457,-84.27234,10mi')), list)
+	def testGet_tweets_by_zipcode(self):
+		self.assertIs(type(model.get_tweets_by_zipcode('43.605457,-84.27234,10mi')), list)
 
 
 class MyAppIntegrationTestCase(unittest.TestCase):
