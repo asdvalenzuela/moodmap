@@ -3,7 +3,7 @@ import pymongo
 import json
 import pickle
 import pusher
-from analyzeTweetsClean import best_word_features, clean_and_tokenize
+from analyzeTweets import best_word_features, clean_and_tokenize
 import time
 
 p = pusher.Pusher(
