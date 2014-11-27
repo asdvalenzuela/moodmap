@@ -22,7 +22,7 @@ Many different features and combinations of features were used to find the resul
 The classifier used in the current version of Happy California was created from analyzeTweets.py, which uses NLTK as the analytical library. I included SKanalyzeTweets.py to demonstrate the same process using Scikit-learn.
 
 ##### Database
-The tweets used to train the classifier, the incoming tweets from the Twitter Stream API, and the location information for all U.S. zipcodes are stored in MongoDB. Mongo’s ability to store varied data in a JSON-like structure for easy storage and retrieval made it ideal for this use case. Mongo's flexible, dynamic data schemas were also useful, as a relational database was not needed for this project.
+The tweets used to train the classifier, the incoming tweets from the Twitter Stream API, and the location information for all U.S. zipcodes are stored in MongoDB. Mongo’s ability to store varied data in a JSON-like structure for easy storage and retrieval made it ideal for this use case.
 
 ##### Frontend
 
