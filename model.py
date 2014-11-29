@@ -115,3 +115,7 @@ def get_tweets_by_zipcode(geocode):
 
                     tweet_list.append(data)
     return tweet_list  
+
+def clear_database():
+    db.stream_tweets.remove({})
+    return "cleared db"

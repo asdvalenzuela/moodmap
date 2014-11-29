@@ -14,13 +14,13 @@ var sadIcon = L.icon({
     popupAnchor: [0, -20]
 });
 
-var setMarker = function(tweet, icon_type, sentiment) {
+var setMarker = function(tweet, icon_type) {
     var popup_type;
     if (icon_type == happyIcon) {
-        popup_type = "<div class=\"happy-popup\"</div><b>" + sentiment + " from</b><figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] + "</figcaption></figure><br>" + tweet['text'];
+        popup_type = "<div class=\"happy-popup\"</div>" + tweet['text'] + "<figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] + "</figcaption></figure>";
     }
     if (icon_type == sadIcon) {
-        popup_type = "<div class=\"sad-popup\"</div><b>" + sentiment + " from</b><figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] +  "</figcaption></figure><br>" + tweet['text'];
+        popup_type = "<div class=\"sad-popup\"</div>" + tweet['text'] + "<figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] +  "</figcaption></figure>";
     }
     newmarker = L.marker([tweet['loc'][1], tweet['loc'][0]],
         { icon: icon_type, title: tweet['score']+  tweet['id_str']}
@@ -48,20 +48,31 @@ $(document).ready(function () {
     getCurrentTime = function() {
         var currentTime = new Date();
         hour = currentTime.getHours();
+        minute = currentTime.getMinutes();
+        if (hour === 0 && minute == 1) {
+            $.get("/clear_db", function() {
+                map.eachLayer(function(layer) {
+                    if (layer instanceof L.Marker) {
+                        map.removeLayer(layer);
+                    }
+                });
+            });
+        }
     };
 
     getCurrentTime();
 
-    setInterval(getCurrentTime(), 60000);
-
+    setInterval(function(){
+        getCurrentTime();
+    }, 60000);
 
     $.get("/coordinates", function(data) {
         for (i = 0; i < data.length; i++) {
             if (data[i]['score'] == '4') {
-                newmarker = setMarker(data[i], happyIcon, "Happy Tweet");
+                newmarker = setMarker(data[i], happyIcon);
             }
             if (data[i]['score'] == '0') {
-                newmarker = setMarker(data[i], sadIcon, "Sad Tweet");
+                newmarker = setMarker(data[i], sadIcon);
             }
         marker_layer.addLayer(newmarker);
         }
@@ -212,19 +223,18 @@ $(document).ready(function () {
         popupAnchor: [0, -20]
     });
 
-    var setMarker = function(tweet, icon_type, sentiment) {
+    var setMarker = function(tweet, icon_type) {
         var popup_type;
         if (icon_type == happyIcon) {
-            popup_type = "<div class=\"happy-popup\"</div><b>" + sentiment + " from</b><figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] + "</figcaption></figure><br>" + tweet['text'];
+            popup_type = "<div class=\"happy-popup\"</div><img src=\"../static/img/happy.png\"><figure style=\"margin-top:-35px\">" + tweet['text'] + "<br><br><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption style=\"font-size:0.75em\">@" + tweet['screen_name'] + "</figcaption></figure></div>";
         }
         if (icon_type == sadIcon) {
-            popup_type = "<div class=\"sad-popup\"</div><b>" + sentiment + " from</b><figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] +  "</figcaption></figure><br>" + tweet['text'];
+            popup_type = "<div class=\"sad-popup\"</div><img src=\"../static/img/sad.png\"><figure style=\"margin-top:-35px\">" + tweet['text'] + "<br><br><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption style=\"font-size:0.75em\">@" + tweet['screen_name'] +  "</figcaption></figure>";
         }
         newmarker = L.marker([tweet['loc'][1], tweet['loc'][0]],
             { icon: icon_type, title: tweet['score']+  tweet['id_str']}
         )
         .bindPopup(popup_type);
-        console.log(newmarker);
         return newmarker;
     };
 
@@ -250,12 +260,12 @@ $(document).ready(function () {
         if (!userInteracting) {
             if ($('.ui-selected')[0].id == 'happy-tweets' || $('.ui-selected')[0].id == 'all-tweets') {
                 if (tweet['score'] == '4') {
-                    newmarker = setMarker(tweet, happyIcon, "Happy Tweet");
+                    newmarker = setMarker(tweet, happyIcon);
                 }
             }
             if ($('.ui-selected')[0].id == 'sad-tweets' || $('.ui-selected')[0].id == 'all-tweets') {
                 if (tweet['score'] == '0') {
-                    newmarker = setMarker(tweet, sadIcon, "Sad Tweet");
+                    newmarker = setMarker(tweet, sadIcon);
                 }
             }
         marker_layer.addLayer(newmarker);

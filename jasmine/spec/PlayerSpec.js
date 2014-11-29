@@ -25,7 +25,29 @@ describe("setMarker", function() {
     }
     it("should place sad marker", function() {
         expect(result).toBe(true);
-  });
+    });
 });
+
+describe("HappyFilterButton", function() {
+    $('#happy-tweets').trigger( "click" );
+    var map = L.mapbox.map('map-one', 'asdv.k6h5h7cf', {zoomControl: false, scrollWheelZoom: false}).setView([37.66, -122], 10);
+    it("should show happy tweets only", function() {
+        map.eachLayer(function(layer) {
+            if (layer["options"]) {
+                if ("title" in layer["options"]) {
+                    if ((layer["options"]["title"].slice(0,1)) == '4') {
+                        opacity = layer.options.opacity;
+                        expect(opacity).toEqual(1);
+                    }
+                    if ((layer["options"]["title"].slice(0,1)) == '0') {
+                        opacity = layer.options.opacity;
+                        expect(opacity).toEqual(0);
+                    }
+                }
+            }
+        });
+    });
+});
+
 
 

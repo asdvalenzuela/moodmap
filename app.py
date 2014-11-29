@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, Response, request, redirect
 import model
 import json
 import time
@@ -58,6 +58,12 @@ def get_tweets_by_zipcode():
     geocode = model.get_geocode(zipcode)
     tweet_list = model.get_tweets_by_zipcode(geocode)
     return Response(json.dumps(tweet_list), mimetype='application/json')
+
+@app.route("/clear_db")
+def clear_db():
+    """Clear database of previous day's tweets"""
+    model.clear_database()
+    return redirect("/")
 
 if __name__ == "__main__":
     app.run(debug = True)
