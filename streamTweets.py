@@ -5,12 +5,16 @@ import pickle
 import pusher
 from analyzeTweets import best_word_features, clean_and_tokenize
 import time
+import datetime
 
 p = pusher.Pusher(
   os.environ.get('PUSHER_APP_ID'),
   os.environ.get('PUSHER_KEY'),
   os.environ.get('PUSHER_SECRET')
 )
+
+# MONGO_URL = os.environ.get('MONGOHQ_URL')
+#parse -> 2 variables
 
 #creates connection to db
 conn = pymongo.MongoClient()
@@ -51,6 +55,8 @@ class listener(StreamListener):
 					tweet['id_str'] = data['id_str']
 					tweet['text'] = data['text'] 
 					tweet['screen_name'] = data['user']['screen_name']
+					timestamp_ms = (int(data['timestamp_ms'])/1000.0)
+					tweet['timestamp'] = datetime.datetime.fromtimestamp(timestamp_ms).strftime('%m/%d %H:%M:%S')
 					#preprocess and score tweet for sentiment
 					token_list = clean_and_tokenize(data['text'])
 					score = classifier.classify(best_word_features(token_list))

@@ -6,6 +6,9 @@ import tweepy
 from tweepy import OAuthHandler
 from tweepy import Cursor 
 
+# MONGO_URL = os.environ.get('MONGOHQ_URL')
+#parse -> 2 variables
+
 # creates connection to db
 client = MongoClient()
 db = client.tweet_database
@@ -44,6 +47,7 @@ def get_todays_tweets(current_hour, current_date):
                                 "profile_img": tweet["profile_img"],
                                 "date": tweet["date"],
                                 "hour": tweet["hour"],
+                                "timestamp": tweet["timestamp"]
                                 })
     return tweet_list
 
@@ -77,6 +81,7 @@ def get_tweets_by_hour(current_date, start_hour, end_hour):
                                     "profile_img": tweet["profile_img"],
                                     "date": tweet["date"],
                                     "hour": tweet["hour"],
+                                    "timestamp": tweet["timestamp"]
                                     })
         return tweet_list
 

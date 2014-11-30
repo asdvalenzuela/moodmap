@@ -9,7 +9,7 @@
 }
 .navbar { 
     display: inline-block; 
-    margin-left: 76%;
+    margin-left: 70%;
     margin-top: 2%;
 }
 a:hover { 
@@ -20,7 +20,6 @@ a {
     font-family: 'Open Sans', sans-serif; 
     font-weight: 100; 
     font-size: 1em;
-    text-decoration: none;
 }
 p { 
     margin-left: 25%; 

@@ -10,9 +10,6 @@ from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist, ConditionalFreqDist
 import pickle
 
-# MONGO_URL = os.environ.get('MONGOHQ_URL')
-#parse -> 2 variables
-
 # creates connection to db
 client = MongoClient()
 db = client.tweet_database
