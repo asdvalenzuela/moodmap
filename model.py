@@ -1,13 +1,15 @@
 from pymongo import MongoClient
 import os
 import pickle
-from analyzeTweets import best_word_features, clean_and_tokenize
+from classifier.analyzeTweets1 import best_word_features, clean_and_tokenize
 import tweepy
 from tweepy import OAuthHandler
 from tweepy import Cursor 
 
+# tweet data in MongoDB is coming from streamTweets.py
+
+# this line is for heroku
 # MONGO_URL = os.environ.get('MONGOHQ_URL')
-#parse -> 2 variables
 
 # creates connection to db
 client = MongoClient()
@@ -23,7 +25,7 @@ auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET)
 # create api 
 api = tweepy.API(auth)
 
-f = open('NBclassifier.pickle', 'rb')
+f = open('classifier/NBclassifier.pickle', 'rb')
 classifier = pickle.load(f)
 
 def get_todays_tweets(current_hour, current_date):
@@ -34,21 +36,19 @@ def get_todays_tweets(current_hour, current_date):
     current date: string of 'month date year'
     """
     tweet_list = []
-    for tweet in db.stream_tweets.find({"date": current_date, 
+    for tweet in db.saved_tweets_from_stream.find({"date": current_date, 
                                         "hour": {"$lte": current_hour}
                                         }):
-        #ensures tweet has a geotag
-        if "loc" in tweet:
-            tweet_list.append({"loc": tweet["loc"], 
-                                "text": tweet["text"], 
-                                "score": tweet["score"], 
-                                "id_str": tweet["id_str"], 
-                                "screen_name": tweet["screen_name"],
-                                "profile_img": tweet["profile_img"],
-                                "date": tweet["date"],
-                                "hour": tweet["hour"],
-                                "timestamp": tweet["timestamp"]
-                                })
+        tweet_list.append({"loc": tweet["loc"], 
+                            "text": tweet["text"], 
+                            "score": tweet["score"], 
+                            "id_str": tweet["id_str"], 
+                            "screen_name": tweet["screen_name"],
+                            "profile_img": tweet["profile_img"],
+                            "date": tweet["date"],
+                            "hour": tweet["hour"],
+                            "timestamp": tweet["timestamp"]
+                            })
     return tweet_list
 
 def get_tweets_by_hour(current_date, start_hour, end_hour):
@@ -67,41 +67,46 @@ def get_tweets_by_hour(current_date, start_hour, end_hour):
         return []
     else:
         tweet_list = []
-        for tweet in db.stream_tweets.find({"date": current_date, 
+        for tweet in db.saved_tweets_from_stream.find({"date": current_date, 
                                             "hour" : {"$gte": start_hour, 
                                                       "$lte": end_hour}
                                             }):     
-            #ensures tweet has a geotag   
-            if "loc" in tweet:
-                tweet_list.append({"loc": tweet["loc"], 
-                                    "text": tweet["text"],
-                                    "score": tweet["score"], 
-                                    "id_str": tweet["id_str"], 
-                                    "screen_name": tweet["screen_name"],
-                                    "profile_img": tweet["profile_img"],
-                                    "date": tweet["date"],
-                                    "hour": tweet["hour"],
-                                    "timestamp": tweet["timestamp"]
-                                    })
+            tweet_list.append({"loc": tweet["loc"], 
+                                "text": tweet["text"],
+                                "score": tweet["score"], 
+                                "id_str": tweet["id_str"], 
+                                "screen_name": tweet["screen_name"],
+                                "profile_img": tweet["profile_img"],
+                                "date": tweet["date"],
+                                "hour": tweet["hour"],
+                                "timestamp": tweet["timestamp"]
+                                })
         return tweet_list
 
 def get_geocode(zipcode):
     """Given a valid zipcode, returns a string of 'latitiude, longitude, radius'.
 
-    zipcode: a string with length 5
+    zipcode: a string of numbers with length 5
     """
     for document in db.zipcodes.find({"zipcode": zipcode}, {"lat": 1, "long": 1}):
         #this is the format twitter requires for the geocode search parameter
         geocode = str(document["lat"]) + ',' + str(document["long"]) + ',10mi'
         return geocode
 
-def get_tweets_by_zipcode(geocode):
-    """Given a geocode string, returns a list of tweets from that zipcode, scored for sentiment.
+def score_tweet_for_sentiment(data):
+    token_list = clean_and_tokenize(data['text'])
+    score = classifier.classify(best_word_features(token_list))
+    data['score'] = score
+    return data
+
+def get_tweets_by_zipcode(zipcode):
+    """Given a geocode string, returns a list of tweets from that zipcode via Twitter Search API, scored for sentiment.
 
     geocode: a string of 'latitiude, longitude, radius'
     """
+    geocode = get_geocode(zipcode)
     tweet_list = []
-    for page in Cursor(api.search, lang="en", count=100, geocode=geocode).pages(2):
+    for page in Cursor(api.search, lang="en", count=100, geocode=geocode).pages(1):
         for tweet in page:
             data = {}
             #ensures the tweet has a geotag
@@ -113,12 +118,8 @@ def get_tweets_by_zipcode(geocode):
                     data['id_str'] = tweet.id_str
                     data['screen_name'] = tweet.user.screen_name
                     data['profile_img'] = tweet.user.profile_image_url_https
-                    #preprocess the tweet and score it for sentiment
-                    token_list = clean_and_tokenize(data['text'])
-                    score = classifier.classify(best_word_features(token_list))
-                    data['score'] = score
-
-                    tweet_list.append(data)
+                    scored_tweet = score_tweet_for_sentiment(data)
+                    tweet_list.append(scored_tweet)
     return tweet_list  
 
 def clear_database():

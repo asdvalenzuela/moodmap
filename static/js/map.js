@@ -17,19 +17,17 @@ var sadIcon = L.icon({
 var setMarker = function(tweet, icon_type) {
     var popup_type;
     if (icon_type == happyIcon) {
-        popup_type = "<div class=\"happy-popup\"</div>" + tweet['text'] + "<figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] + "</figcaption></figure>";
+        popup_type = "<div class=\"happy-popup\"</div><figure style=\"margin-left:20px\">" + tweet['text'] + "<br><br><img style=\"margin-left:0px;display:inline-block\" src=" + tweet['profile_img'] +" height=40 width=40/><figcaption style=\"font-size:0.75em;display:inline-block;margin-left:10px\">@" + tweet['screen_name'] + "<br>" + tweet["timestamp"] + "</figcaption></figure></div>";
     }
     if (icon_type == sadIcon) {
-        popup_type = "<div class=\"sad-popup\"</div>" + tweet['text'] + "<figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] +  "</figcaption></figure>";
+        popup_type = "<div class=\"sad-popup\"</div><figure style=\"margin-left:20px\">" + tweet['text'] + "<br><br><img style=\"margin-left:0px;display:inline-block\" src=" + tweet['profile_img'] +" height=40 width=40/><figcaption style=\"font-size:0.75em;display:inline-block;margin-left:10px\">@" + tweet['screen_name'] +  "<br>" + tweet["timestamp"] + "</figcaption></figure></div>";
     }
     newmarker = L.marker([tweet['loc'][1], tweet['loc'][0]],
         { icon: icon_type, title: tweet['score']+  tweet['id_str']}
     )
     .bindPopup(popup_type);
-    console.log(newmarker);
     return newmarker;
 };
-
 
 $(document).ready(function () {
 
@@ -39,6 +37,7 @@ $(document).ready(function () {
 
     new L.Control.Zoom({ position: 'topright' }).addTo(map);
    
+    //connects with input from streamTweets.py
     var pusher = new Pusher('998f83412af68dd3edb3');
     var channel = pusher.subscribe('tweet_map');
 
@@ -62,11 +61,11 @@ $(document).ready(function () {
 
     getCurrentTime();
 
-    setInterval(function(){
+    setInterval(function() {
         getCurrentTime();
     }, 60000);
 
-    $.get("/coordinates", function(data) {
+    $.get("/todays_tweets", function(data) {
         for (i = 0; i < data.length; i++) {
             if (data[i]['score'] == '4') {
                 newmarker = setMarker(data[i], happyIcon);
@@ -119,7 +118,7 @@ $(document).ready(function () {
         change: function( event, ui) {
             var startTime = ui.values[0];
             var endTime = ui.values[1];
-            var time_range_url = "/get_tweets_by_time?startTime=" + startTime + "&endTime=" + endTime;
+            var time_range_url = "/tweets_by_hour?startTime=" + startTime + "&endTime=" + endTime;
             $.get(time_range_url, function(data){
                 var display_list = [];
                 for (i = 0; i < data.length; i++) {
@@ -226,6 +225,7 @@ $(document).ready(function () {
     var setMarker = function(tweet, icon_type) {
         var popup_type;
         if (icon_type == happyIcon) {
+
             popup_type = "<div class=\"happy-popup\"</div><figure style=\"margin-left:20px\">" + tweet['text'] + "<br><br><img style=\"margin-left:0px;display:inline-block\" src=" + tweet['profile_img'] +" height=40 width=40/><figcaption style=\"font-size:0.75em;display:inline-block;margin-left:10px\">@" + tweet['screen_name'] + "<br>" + tweet["timestamp"] + "</figcaption></figure></div>";
         }
         if (icon_type == sadIcon) {

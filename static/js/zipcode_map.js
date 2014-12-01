@@ -27,6 +27,7 @@ $(document).ready(function () {
         else {
             $.get("/get_tweets_by_zipcode", {zipcode: zipcode}, function(data) {
                 for (i = 0; i < data.length; i++) {
+                    newmarker = setMarker(data[i]);
                     if (data[i]['score'] == '4') {
                         newmarker = setMarker(data[i], happyIcon, "Happy Tweet");
                     }
@@ -56,19 +57,38 @@ $(document).ready(function () {
         popupAnchor: [0, -20]
     });
 
-    var setMarker = function(tweet, icon_type, sentiment) {
-        var popup_type = null;
+    var setMarker = function(tweet, icon_type) {
+        var popup_type;
         if (icon_type == happyIcon) {
-            popup_type = "<div class=\"happy-popup\"</div><b>" + sentiment + " from</b><figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] + "</figcaption></figure><br>" + tweet['text'];
+            popup_type = "<div class=\"happy-popup\"</div><figure style=\"margin-left:20px\">" + tweet['text'] + "<br><br><img style=\"margin-left:0px;display:inline-block\" src=" + tweet['profile_img'] +" height=40 width=40/><figcaption style=\"font-size:0.75em;display:inline-block;margin-left:10px\">@" + tweet['screen_name'] + "<br>" + tweet["timestamp"] + "</figcaption></figure></div>";
         }
         if (icon_type == sadIcon) {
-            popup_type = "<div class=\"sad-popup\"</div><b>" + sentiment + " from</b><figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] +  "</figcaption></figure><br>" + tweet['text'];
+            popup_type = "<div class=\"sad-popup\"</div><figure style=\"margin-left:20px\">" + tweet['text'] + "<br><br><img style=\"margin-left:0px;display:inline-block\" src=" + tweet['profile_img'] +" height=40 width=40/><figcaption style=\"font-size:0.75em;display:inline-block;margin-left:10px\">@" + tweet['screen_name'] +  "<br>" + tweet["timestamp"] + "</figcaption></figure></div>";
         }
         newmarker = L.marker([tweet['loc'][1], tweet['loc'][0]],
             { icon: icon_type, title: tweet['score']+  tweet['id_str']}
         )
         .bindPopup(popup_type);
         return newmarker;
-    };
+};
+
+    // var setMarker = function(tweet) {
+    // // var setMarker = function(tweet, icon_type, sentiment) {
+    //     //if tweet['score'] === '4' {
+    //         // etc
+    //     // }
+    //     var popup_type = null;
+    //     if (icon_type == happyIcon) {
+    //         popup_type = "<div class=\"happy-popup\"</div><b>" + sentiment + " from</b><figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] + "</figcaption></figure><br>" + tweet['text'];
+    //     }
+    //     if (icon_type == sadIcon) {
+    //         popup_type = "<div class=\"sad-popup\"</div><b>" + sentiment + " from</b><figure style=\"margin-left: 0px\"><img src=" + tweet['profile_img'] +" height=30 width=30/><figcaption>@" + tweet['screen_name'] +  "</figcaption></figure><br>" + tweet['text'];
+    //     }
+    //     newmarker = L.marker([tweet['loc'][1], tweet['loc'][0]],
+    //         { icon: icon_type, title: tweet['score']+  tweet['id_str']}
+    //     )
+    //     .bindPopup(popup_type);
+    //     return newmarker;
+    // };
 
 });

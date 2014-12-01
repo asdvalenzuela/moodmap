@@ -15,8 +15,8 @@ def get_current_datetime():
 def display_map():
     return render_template('map.html')
 
-@app.route('/coordinates')
-def return_coords():
+@app.route('/todays_tweets')
+def todays_tweets():
     """Returns list of all tweets from the current date up to the current hour.
     
     current_date: string of 'month date year'
@@ -26,8 +26,8 @@ def return_coords():
     tweet_list = model.get_todays_tweets(current_hour, current_date)
     return Response(json.dumps(tweet_list), mimetype='application/json')
 
-@app.route("/get_tweets_by_time")
-def get_tweets_by_time_range():
+@app.route('/tweets_by_hour')
+def tweets_by_hour():
     """Takes start hour and end hour from frontend, returns list of all tweets 
     from the current date between those hours.
     
@@ -39,8 +39,7 @@ def get_tweets_by_time_range():
     end_hour = request.args.get('endTime')
     tweet_list = model.get_tweets_by_hour(current_date, start_hour, end_hour) 
     if len(tweet_list) == 0:
-        #fix this line
-        return "Please enter a valid start and end time."
+        return "Please check your start and end times."
     else:
         return Response(json.dumps(tweet_list), mimetype='application/json')
 
@@ -52,11 +51,10 @@ def display_zipcode_map():
 def get_tweets_by_zipcode():
     """Takes zipcode from frontend, returns a list of tweets from that zipcode.
 
-    zipcode: a string with length 5
+    zipcode: a string of numbers with length 5
     """
     zipcode = request.args.get('zipcode')
-    geocode = model.get_geocode(zipcode)
-    tweet_list = model.get_tweets_by_zipcode(geocode)
+    tweet_list = model.get_tweets_by_zipcode(zipcode)
     return Response(json.dumps(tweet_list), mimetype='application/json')
 
 @app.route("/clear_db")
