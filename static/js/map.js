@@ -4,71 +4,6 @@ var getCurrentTime = function() {
     minute = currentTime.getMinutes();
 };
 
-var happyIcon = L.icon({
-    iconUrl: '../static/img/happy.png',
-    iconSize: [16, 24],
-    iconAnchor: [8, 12],
-    popupAnchor: [0, -20]
-});
-
-var sadIcon = L.icon({
-    iconUrl: '../static/img/sad.png',
-    iconSize: [16, 24],
-    iconAnchor: [8, 12],
-    popupAnchor: [0, -20]
-});
-
-var setMarker = function(tweet) {
-    if (tweet['score'] === '4') {
-        iconType = happyIcon;
-        popupType = "<div class=\"happy-popup\"</div><figure style=\"margin-left:20px\">" + tweet['text'] + "<br><br><img style=\"margin-left:0px;display:inline-block\" src=" + tweet['profile_img'] +" height=40 width=40/><figcaption style=\"font-size:0.75em;display:inline-block;margin-left:10px\">@" + tweet['screen_name'] + "<br>" + tweet["timestamp"] + "</figcaption></figure></div>";
-    }
-    if (tweet['score'] === '0') {
-        iconType = sadIcon;
-        popupType = "<div class=\"sad-popup\"</div><figure style=\"margin-left:20px\">" + tweet['text'] + "<br><br><img style=\"margin-left:0px;display:inline-block\" src=" + tweet['profile_img'] +" height=40 width=40/><figcaption style=\"font-size:0.75em;display:inline-block;margin-left:10px\">@" + tweet['screen_name'] +  "<br>" + tweet["timestamp"] + "</figcaption></figure></div>";
-    }
-    newMarker = L.marker([tweet['loc'][1], tweet['loc'][0]],
-        { icon: iconType, title: tweet['score'] + tweet['id_str']}
-    )
-    .bindPopup(popupType);
-    return newMarker;
-};
-
-var removeMarkers = function() {
-    map.eachLayer(function(layer) {
-        if (layer instanceof L.Marker) {
-            map.removeLayer(layer);
-        }
-    });
-};
-
-var filterTweets = function(tweetType) {
-    if (tweetType === 'all-tweets') {
-        setOpacity(1, 1);
-    }
-    if (tweetType === 'sad-tweets') {
-        setOpacity(0, 1);
-    }
-    if (tweetType === 'happy-tweets') {
-        setOpacity(1, 0);
-    }
-};
-
-var setOpacity = function(happyOpacity, sadOpacity) {
-    map.eachLayer(function(layer) {
-        if (layer["options"]) {
-            if ("title" in layer["options"]) {
-                if ((layer["options"]["title"].slice(0,1)) === '4') {
-                    layer.setOpacity(happyOpacity);
-                }
-                if ((layer["options"]["title"].slice(0,1)) === '0') {
-                    layer.setOpacity(sadOpacity);
-                }
-            }
-        }
-    });
-};
-
 $(document).ready(function () {
 
     L.mapbox.accessToken = 'pk.eyJ1IjoiYXNkdiIsImEiOiJYY3BLVFFJIn0.95ta0d-qxicw8FR70TEJ9w';
@@ -81,11 +16,13 @@ $(document).ready(function () {
     var pusher = new Pusher('998f83412af68dd3edb3');
     var channel = pusher.subscribe('tweet_map');
 
+    //creates initial layer and adds to map
     var markerLayer = new L.FeatureGroup();
     markerLayer.addTo(map);
 
     getCurrentTime();
 
+    //checks time every minute, clears db and map at 12:01 am
     setInterval(function() {
         getCurrentTime();
         if (hour === 0 && minute === 1) {
@@ -95,6 +32,15 @@ $(document).ready(function () {
         }
     }, 60000);
 
+    var removeMarkers = function() {
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer);
+            }
+        });
+    };
+
+    //displays all tweets from today up to the current hour
     $.get("/todays_tweets", function(data) {
         for (i = 0; i < data.length; i++) {
             newMarker = setMarker(data[i]);
@@ -102,6 +48,7 @@ $(document).ready(function () {
         }
     });
     
+    //pans to each marker as it is placed
     markerLayer.on('layeradd', function(e) {
         map.panTo(e.layer.getLatLng());
     });
@@ -145,6 +92,7 @@ $(document).ready(function () {
             }
             $( "#amount" ).val( "(from " + startHour + " to " + endHour + ")" );
         },
+        //displays only the tweets from the hour range specified by the slider
         change: function( event, ui) {
             var startTime = ui.values[0];
             var endTime = ui.values[1];
@@ -175,6 +123,8 @@ $(document).ready(function () {
     });
 
     //Jquery UI selectables
+    //displays happy, sad, or all tweets based on active selectable
+    //clears map if clear is selected
     $(function() {
         $("#selectable").selectable({
             selected: function (event, ui) {
@@ -189,8 +139,39 @@ $(document).ready(function () {
         });
     });
 
+    //changes opacity scores based on active selectable
+    var filterTweets = function(tweetType) {
+        if (tweetType === 'all-tweets') {
+            setOpacity(1, 1);
+        }
+        if (tweetType === 'sad-tweets') {
+            setOpacity(0, 1);
+        }
+        if (tweetType === 'happy-tweets') {
+            setOpacity(1, 0);
+        }
+    };
+
+    //changes opacity of markers based on active selectable
+    var setOpacity = function(happyOpacity, sadOpacity) {
+        map.eachLayer(function(layer) {
+            if (layer["options"]) {
+                if ("title" in layer["options"]) {
+                    if ((layer["options"]["title"].slice(0,1)) === '4') {
+                        layer.setOpacity(happyOpacity);
+                    }
+                    if ((layer["options"]["title"].slice(0,1)) === '0') {
+                        layer.setOpacity(sadOpacity);
+                    }
+                }
+            }
+        });
+    };
+
     var userInteracting = false;
 
+    //toggles visibility of slider based on selected radio button
+    //changes variable userInteracting to stop/start Pusher Websocket API
     $('input').on('click', function() {
         if ($('input')[0].checked  === true) {
             userInteracting = false;
@@ -203,6 +184,8 @@ $(document).ready(function () {
         }
     });
 
+    //places happy, sad, or all tweets received from Pusher Websocket API based on active selectable
+    //stops Pusher if 'By Hour' is selected
     channel.bind('new_tweet', function(tweet) {
         if (!userInteracting) {
             if ($('.ui-selected')[0].id === 'happy-tweets' || $('.ui-selected')[0].id === 'all-tweets') {
