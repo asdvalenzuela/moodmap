@@ -106,7 +106,7 @@ def get_tweets_by_zipcode(zipcode):
     """
     geocode = get_geocode(zipcode)
     tweet_list = []
-    for page in Cursor(api.search, lang="en", count=100, geocode=geocode).pages(1):
+    for page in Cursor(api.search, lang="en", count=50, geocode=geocode).pages(1):
         for tweet in page:
             data = {}
             #ensures the tweet has a geotag

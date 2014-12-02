@@ -13,8 +13,8 @@ p = pusher.Pusher(
   os.environ.get('PUSHER_SECRET')
 )
 
+# this line is for heroku
 # MONGO_URL = os.environ.get('MONGOHQ_URL')
-#parse -> 2 variables
 
 #creates connection to db
 conn = pymongo.MongoClient()
