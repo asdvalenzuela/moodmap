@@ -15,7 +15,7 @@ MongoDB, Leaflet/Mapbox, Pusher Websockets API, Scikit-learn, NLTK, Regex, Jquer
 ##### Sentiment Analysis
 A training set of 1.6 million pre-labeled positive and negative tweets was used to train a Naïve Bayes classifier. The set was obtained from [Sentiment140](http://help.sentiment140.com/for-students). Each tweet was preprocessed using regular expressions to remove any usernames, links, and articles, then tokenized. The tokenization function preserved emoticons so that the presence or absence of positive or negative emotions could be used as a feature for the analysis. 
 
-The final classifier was trained using only the 10,000 most useful features. To find the most informative features, a frequency distribution and conditional frequency distribution (conditions were positive and negative labels) were built. Each word was scored using a chi-square test, which compares the frequency of the word in each label to the frequency of the word in the whole dataset, and determines whether that difference is significant. After the words were scored, the top n most highly scored words were chosen. Each tweet was then checked for presence or absence of these top words during feature extraction. This process served to eliminate noise, or low-information features, in the dataset, which can decrease performance.
+The final classifier was trained using only the 500,000 most useful features. To find the most informative features, a frequency distribution and conditional frequency distribution (conditions were positive and negative labels) were built. Each word was scored using a chi-square test, which compares the frequency of the word in each label to the frequency of the word in the whole dataset, and determines whether that difference is significant. After the words were scored, the top n most highly scored words were chosen. Each tweet was then checked for presence or absence of these top words during feature extraction. This process served to eliminate noise, or low-information features, in the dataset, which can decrease performance.
 
 Many different features and combinations of features (ngrams, stopwords, stemming, different tokenization functions, etc.) were used to find the result with the most accuracy in predicting positive and negative tweets, and the highest precision and recalls scores across both labels. After training, the classifier was then serialized via the python module Pickle. The pickle file was then opened and the saved classifier used to determine the sentiment of incoming live tweets.
 
@@ -39,14 +39,20 @@ Core of the flask app, lists all routes.
 #####model.py
 All database queries made by the flask app.
 
+#####receiveTweets.py
+Establishes connection to Twitter Stream API. Incoming tweets are analyzed for sentiment, stored in MongoDB, and pushed to the frontend.
+
 #####analyzeTweets.py
-Core of the natural language processing and sentiment analysis. Used to build the Naïve Bayes classifier.
+Preprocesses and tokenizes incoming tweets from the Twitter Stream API.
+
+#####buildClassifier.py
+Built the Naïve Bayes classifier.
 
 #####SKanalyzeTweets.py
-Another version of analyzeTweets.py using Scikit-learn instead of NLTK.
+Another version of buildClassifier.py using Scikit-learn instead of NLTK.
 
-#####streamTweets.py
-Establishes connection to Twitter Stream API.
+#####NBclassifier.pickle
+Saved classifier used to score incoming tweets from the Twitter Stream API for sentiment.
 
 ### References
 

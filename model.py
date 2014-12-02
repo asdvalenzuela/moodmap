@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import os
 import pickle
-from classifier.analyzeTweets1 import best_word_features, clean_and_tokenize
+from classifier.analyzeTweets import best_word_features, clean_and_tokenize
 import tweepy
 from tweepy import OAuthHandler
 from tweepy import Cursor 
