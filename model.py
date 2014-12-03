@@ -9,10 +9,10 @@ from tweepy import Cursor
 # tweet data in MongoDB is coming from streamTweets.py
 
 # this line is for heroku
-MONGO_URL = os.environ.get('MONGOHQ_URL')
+# MONGO_URL = os.environ.get('MONGOHQ_URL')
 
 # creates connection to db
-client = MongoClient(MONGO_URL)
+client = MongoClient()
 db = client.tweet_database
 
 TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')

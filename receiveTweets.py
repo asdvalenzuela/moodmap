@@ -14,10 +14,10 @@ p = pusher.Pusher(
 )
 
 # this line is for heroku
-MONGO_URL = os.environ.get('MONGOHQ_URL')
+# MONGO_URL = os.environ.get('MONGOHQ_URL')
 
 #creates connection to db
-conn = pymongo.MongoClient('MONGO_URL')
+conn = pymongo.MongoClient()
 db = conn.tweet_database
 
 f = open('classifier/NBclassifier.pickle', 'rb')
