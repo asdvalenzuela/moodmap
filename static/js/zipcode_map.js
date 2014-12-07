@@ -49,9 +49,9 @@ $(document).ready(function () {
         markerLayer = new L.FeatureGroup();
         markerLayer.addTo(map);
         var zipcode = $("#zipcode").val();
-        var re = /^[0-9]*$/;
+        var re = /^\d{5}$/;
         //checks that zipcode is 5 numbers
-        if (zipcode.length !== 5 || !re.test(zipcode)) {
+        if (!re.test(zipcode)) {
             alert("Error: Input must be five numbers.");
             return false;
         }
