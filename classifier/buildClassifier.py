@@ -89,6 +89,9 @@ def main():
     test_list = tweets[:1000]+ tweets[1599000:]
     word_scores = create_word_scores()
     best_words = find_best_words(word_scores, 500000)
+    f = open('bestwords.pickle', 'wb')
+    pickle.dump(best_words, f)
+    f.close()
     training_set = classify.apply_features(best_word_features, tweet_list)
     print "extracted features"
     # train the classifier with the training set
