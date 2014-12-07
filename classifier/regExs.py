@@ -1,15 +1,15 @@
 import re
 
 #remove username from tweet
-username = r"""(@([A-Za-z0-9_]+))"""
+username = r"(@(\w+))"
 username_re = re.compile(username, re.VERBOSE | re.I | re.UNICODE)
 
 #remove url from tweet
-url = r"""((https?):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)"""
+url = r"((https?):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)"
 url_re = re.compile(url, re.VERBOSE | re.I | re.UNICODE)
 
 #remove articles from tweet
-articles = r"""(\s+)(a|an|and|the)(\s+)"""
+articles = r"(\s+)(a|an|and|the)(\s+)"
 articles_re = re.compile(articles, re.VERBOSE | re.I | re.UNICODE)
 
 #check for positive emoticons
