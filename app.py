@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response, request, redirect
 import model
 import json
 import time
+import os
 
 app = Flask(__name__)
 
@@ -64,4 +65,5 @@ def clear_db():
     return redirect("/")
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    DEBUG = "NO_DEBUG" not in os.environ
+    app.run(debug = DEBUG)
