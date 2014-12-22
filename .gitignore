@@ -1,3 +1,10 @@
 /env/
 .DS_store
 *.pyc
+*.pickle
+*.LICENSE
+*.zip
+/testing/jasmine/lib/
+/testing/jasmine/src/
+/testing/jasmine/spec/javascripts/
+/testing/jasmine/spec/SpecHelper.js
