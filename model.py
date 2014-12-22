@@ -28,34 +28,29 @@ api = tweepy.API(auth)
 f = open('classifier/NBclassifier.pickle', 'rb')
 classifier = pickle.load(f)
 
-def get_todays_tweets(current_hour, current_date):
-    """Given the current date and hour, returns list of all tweets 
-    from the current date up to the current hour.
+def get_todays_tweets(current_hour):
+    """Given the current hour, returns list of all tweets 
+    up to the current hour.
 
     current_hour: integer between 0 and 24
-    current date: string of 'month date year'
     """
     tweet_list = []
-    for tweet in db.saved_tweets_from_stream.find({"date": current_date, 
-                                        "hour": {"$lte": current_hour}
-                                        }):
+    for tweet in db.saved_tweets_from_stream.find({"hour": {"$lte": current_hour}}).limit(2000):
         tweet_list.append({"loc": tweet["loc"], 
                             "text": tweet["text"], 
                             "score": tweet["score"], 
                             "id_str": tweet["id_str"], 
                             "screen_name": tweet["screen_name"],
                             "profile_img": tweet["profile_img"],
-                            "date": tweet["date"],
                             "hour": tweet["hour"],
                             "timestamp": tweet["timestamp"]
                             })
     return tweet_list
 
-def get_tweets_by_hour(current_date, start_hour, end_hour):
+def get_tweets_by_hour(start_hour, end_hour):
     """Given the current date, a start hour, and an end hour, returns 
     list of all tweets from the current date between those hours.
     
-    current_date: string of 'month date year'
     start_hour, end_hour: integers between 0 and 24
     """
     try:
@@ -67,17 +62,16 @@ def get_tweets_by_hour(current_date, start_hour, end_hour):
         return []
     else:
         tweet_list = []
-        for tweet in db.saved_tweets_from_stream.find({"date": current_date, 
-                                            "hour" : {"$gte": start_hour, 
-                                                      "$lte": end_hour}
-                                            }):     
+        for tweet in db.saved_tweets_from_stream.find({"hour" : {"$gte": start_hour, 
+                                                                "$lte": end_hour
+                                                                }
+                                                      }):     
             tweet_list.append({"loc": tweet["loc"], 
                                 "text": tweet["text"],
                                 "score": tweet["score"], 
                                 "id_str": tweet["id_str"], 
                                 "screen_name": tweet["screen_name"],
                                 "profile_img": tweet["profile_img"],
-                                "date": tweet["date"],
                                 "hour": tweet["hour"],
                                 "timestamp": tweet["timestamp"]
                                 })

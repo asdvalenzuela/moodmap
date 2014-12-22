@@ -162,6 +162,7 @@ $(document).ready(function () {
                 var tweetType = ui.selected.id;
                 if (tweetType === 'clear-button') {
                     removeMarkers();
+                    $('.ui-selected')[0].id = 'all-tweets';
                 }
                 else {
                 filterTweets(tweetType);

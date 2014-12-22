@@ -34,19 +34,22 @@ TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 auth = OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
 auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET)
 
+GMT_convert = {0:17, 1:18, 2:19, 3:20, 4:21, 5:22, 6:23, 7:24, 8:0, 9:1, 10:2, 11:3, 12:4, 
+				13:5, 14:6, 15:7, 16:8, 17:9, 18:10, 19:11, 20:12, 21:13, 22:14, 23:15, 24:16}
+
 def parse_data(data):
 	tweet = {}
 	tweet['loc'] = data['coordinates']['coordinates']
-	#date and hour fields are for querying purposes
-	tweet['date'] = time.strftime("%m %d %y")
-	tweet['hour'] = int(time.strftime("%H"))
+	#hour field is for querying purposes
+	created_at = int(data['created_at'][11:13])
+	tweet['hour'] = GMT_convert[created_at]
 	tweet['entities'] = data['entities']
 	tweet['id'] = data['id']
 	tweet['profile_img'] = data['user']["profile_image_url_https"]
 	tweet['id_str'] = data['id_str']
 	tweet['text'] = data['text'] 
 	tweet['screen_name'] = data['user']['screen_name']
-	timestamp_ms = (int(data['timestamp_ms'])/1000.0)
+	timestamp_ms = ((int(data['timestamp_ms'])-28800000) /1000.0)
 	#timestamp field is for display purposes within the tweet popup
 	tweet['timestamp'] = datetime.datetime.fromtimestamp(timestamp_ms).strftime('%m/%d %H:%M:%S')
 	return tweet
