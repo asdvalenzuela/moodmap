@@ -2,6 +2,7 @@ Happy California
 ===========
 
 Now deployed on Heroku: https://happy-california.herokuapp.com/
+
 Learn more about the developer: www.linkedin.com/in/asdvalenzuela/
 
 Happy California is a fullstack web application that receives live, geotagged tweets and creates a real-time measurement of the sentiment balance in the Bay Area. Using natural language processing, sentiment analysis, and machine learning, the tweets are analyzed on the fly and mapped to browse and peruse. Feeling under the weather? Filter for happy tweets. Curious if people are more negative in the morning? Check out the hour-by-hour view. Not from the Bay Area? Enter your zipcode and see the current sentiment balance for your area.
