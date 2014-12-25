@@ -15,13 +15,9 @@ from tweepy import Cursor
 client = MongoClient()
 db = client.tweet_database
 
-TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
-TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
-TWITTER_ACCESS_TOKEN = os.environ.get('TWITTER_ACCESS_TOKEN')
-TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 # twitter OAuth process
-auth = OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
-auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET)
+auth = OAuthHandler(os.environ.get('TWITTER_CONSUMER_KEY'), os.environ.get('TWITTER_CONSUMER_SECRET'))
+auth.set_access_token(os.environ.get('TWITTER_ACCESS_TOKEN'), os.environ.get('TWITTER_ACCESS_TOKEN_SECRET'))
 # create api 
 api = tweepy.API(auth)
 
