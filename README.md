@@ -12,12 +12,12 @@ Happy California is a fullstack web application that receives live, geotagged tw
 
 ### Technology
 
-MongoDB, Leaflet/Mapbox, Pusher Websockets API, Scikit-learn, NLTK, Regex, Jquery, Javascript, Jquery UI, HTML, CSS, Flask, Python, Twitter API, Pickle, Ajax
+MongoDB, Leaflet/Mapbox, Pusher Websockets API, Scikit-learn, NLTK, Regex, jQuery, JS, jQuery UI, HTML, CSS, Flask, Python, Twitter API, Pickle, AJAX
 
 (Dependencies are listed in requirements.txt)
 
 ##### Sentiment Analysis
-A training set of 1.6 million pre-labeled positive and negative tweets was used to train a Naïve Bayes classifier. The set was obtained from [Sentiment140](http://help.sentiment140.com/for-students). Each tweet was preprocessed using regular expressions to remove any usernames, links, and articles, then tokenized. The tokenization function preserved emoticons so that the presence or absence of positive or negative emotions could be used as a feature for the analysis. 
+A training set of 1.6 million pre-labeled positive and negative tweets was used to train a Naïve Bayes classifier. The set was obtained from [Sentiment140](http://help.sentiment140.com/for-students). Each tweet was preprocessed using regular expressions to remove any usernames, links, and articles, then tokenized. The tokenization function authored by [Chris Potts](http://sentiment.christopherpotts.net/) preserved emoticons so that the presence or absence of positive or negative emotions could be used as a feature for the analysis. 
 
 The final classifier was trained using only the most useful features. To find the most informative features, a frequency distribution and conditional frequency distribution (conditions were positive and negative labels) were built. Each word was scored using a chi-square test, which compares the frequency of the word in each label to the frequency of the word in the whole dataset, and determines whether that difference is significant. After the words were scored, the top n most highly scored words were chosen. Each tweet was then checked for presence or absence of these top words during feature extraction. This process served to eliminate noise, or low-information features, in the dataset, which can decrease performance.
 
@@ -30,10 +30,16 @@ The tweets used to train the classifier, the incoming tweets from the Twitter St
 
 ##### Frontend
 
-The front-end is composed of a Mapbox (built on Leaflet) map with custom markers and popups, custom CSS, and Jquery UI elements for the buttons and slider. Map interactivity is programmed with a combination of Jquery UI, Javascript, Jquery, Ajax, and Mapbox/Leaflet Javascript. Pusher Websocket API pushes the incoming tweets to Javascript, where they are mapped with Mapbox/Leaflet. 
+The front-end is composed of a Mapbox (built on Leaflet) map with custom markers and popups, custom CSS, and jQuery UI elements for the buttons and slider. Map interactivity is programmed with a combination of jQuery UI, JS, jQuery, AJAX, and Mapbox/Leaflet. Pusher Websocket API pushes the incoming tweets to JS, where they are mapped with Mapbox/Leaflet. 
+
+Mapbox was chosen for the mapping technology due to its customizability and well-documented API.Pusher Websocket API was helpful as the Twitter Stream API is by nature a sporadic source, so that setting an interval for AJAX requests would sometimes result in zero tweets and sometimes result in less tweets than had come in from Twitter during that interval. Pusher Websocket ensures that each tweet is pushed to the frontend as it is received, no matter the interval.
 
 ![ViewByHour](https://github.com/asdvalenzuela/moodmap/blob/master/static/img/ViewByHourExample.png)
 ![TweetsByZipcode](https://github.com/asdvalenzuela/moodmap/blob/master/static/img/TweetsByZipcodeExample.png)
+
+##### Version 2.0
+
+In the future, I'd like to continue improving the classifier to see if I can get the predictions to be even more accurate. I'd also like to add a geolocation feature so that no matter where the user is, the map opens to that location and starts receiving tweets from that area. I'd also like the user to be able to filter through all the tweets that have been posted to the area that day using the filter by hour feature, but at the moment this results in very slow loading times for the map. I have limited the map to only displaying the 2000 most recent tweets for this reason. I'd like to experiment with using a caching technology so that all tweets can be displayed while still maintaining the speed of the app. 
 
 ### Structure
 
