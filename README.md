@@ -32,14 +32,22 @@ The tweets used to train the classifier, the incoming tweets from the Twitter St
 
 The front-end is composed of a Mapbox (built on Leaflet) map with custom markers and popups, custom CSS, and jQuery UI elements for the buttons and slider. Map interactivity is programmed with a combination of jQuery UI, JS, jQuery, AJAX, and Mapbox/Leaflet. Pusher Websocket API pushes the incoming tweets to JS, where they are mapped with Mapbox/Leaflet. 
 
-Mapbox was chosen for the mapping technology due to its customizability and well-documented API.Pusher Websocket API was helpful as the Twitter Stream API is by nature a sporadic source, so that setting an interval for AJAX requests would sometimes result in zero tweets and sometimes result in less tweets than had come in from Twitter during that interval. Pusher Websocket ensures that each tweet is pushed to the frontend as it is received, no matter the interval.
+Mapbox was chosen for the mapping technology due to its customizability and well-documented API. Pusher Websocket API was helpful as the Twitter Stream API is by nature a sporadic source, so that setting an interval for AJAX requests would sometimes result in zero tweets and sometimes result in less tweets than had come in from Twitter during that interval. Pusher Websocket ensures that each tweet is pushed to the frontend as it is received, no matter the interval.
 
 ![ViewByHour](https://github.com/asdvalenzuela/moodmap/blob/master/static/img/ViewByHourExample.png)
 ![TweetsByZipcode](https://github.com/asdvalenzuela/moodmap/blob/master/static/img/TweetsByZipcodeExample.png)
 
 ##### Version 2.0
 
-In the future, I'd like to continue improving the classifier to see if I can get the predictions to be even more accurate. I'd also like to add a geolocation feature so that no matter where the user is, the map opens to that location and starts receiving tweets from that area. I'd also like the user to be able to filter through all the tweets that have been posted to the area that day using the filter by hour feature, but at the moment this results in very slow loading times for the map. I have limited the map to only displaying the 2000 most recent tweets for this reason. I'd like to experiment with using a caching technology so that all tweets can be displayed while still maintaining the speed of the app. 
+###### Improvements
+
+Classifier - In the future, I'd like to continue improving the classifier to see if I can get the predictions to be even more accurate.  
+
+Filter by Hour - I'd also like the user to be able to filter through all the tweets that have been posted to the area that day using the filter by hour feature, but at the moment this results in very slow loading times for the map. I have limited the map to only displaying the 2000 most recent tweets for this reason. I'd like to experiment with using a caching technology so that all tweets can be displayed while still maintaining the speed of the app. 
+
+###### New Features
+
+I'd like to add a geolocation feature so that no matter where the user is, the map opens to that location and starts receiving tweets from that area.
 
 ### Structure
 
