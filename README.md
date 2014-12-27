@@ -47,7 +47,7 @@ Filter by Hour - I'd also like the user to be able to filter through all the twe
 
 ###### New Features
 
-I'd like to add a geolocation feature so that no matter where the user is, the map opens to that location and starts receiving tweets from that area.
+Geolocation - I'd like to add a geolocation feature so that no matter where the user is, the map opens to that location and starts receiving tweets from that area.
 
 ### Structure
 
