@@ -53,16 +53,6 @@ $(document).ready(function () {
 
     getCurrentTime();
 
-    //checks time every minute, clears db and map at 12:01 am
-    setInterval(function() {
-        getCurrentTime();
-        if (hour === 0 && minute === 1) {
-            $.get("/clear_db", function() {
-                removeMarkers();
-            });
-        }
-    }, 60000);
-
     var removeMarkers = function() {
         map.eachLayer(function(layer) {
             if (layer instanceof L.Marker) {

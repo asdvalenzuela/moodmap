@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, request, redirect
+from flask import Flask, render_template, Response, request
 import model
 import json
 import time
@@ -52,12 +52,6 @@ def get_tweets_by_zipcode():
     zipcode = request.args.get('zipcode')
     tweet_list = model.get_tweets_by_zipcode(zipcode)
     return Response(json.dumps(tweet_list), mimetype='application/json')
-
-@app.route("/clear_db")
-def clear_db():
-    """Clear database of previous day's tweets"""
-    model.clear_database()
-    return redirect("/")
 
 if __name__ == "__main__":
     DEBUG = "NO_DEBUG" not in os.environ
